@@ -1,3 +1,5 @@
+
+
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
@@ -65,9 +67,7 @@ function TRow(props) {
         <TableCell align="center">{row.calories}</TableCell>
         <TableCell align="center">{row.fat}</TableCell>
         <TableCell align="center">{row.carbs}</TableCell>
-        <TableCell align="center"><Button size="small" color="success" variant="outlined">start </Button></TableCell>
-        <TableCell align="center"><Button size="small" color="error" variant="outlined">Finish </Button></TableCell>
-        <TableCell align="center"><Button size="small" variant="outlined">Cancel </Button></TableCell>
+        <TableCell align="center"><Button size="small" color="error" variant="outlined">concol </Button></TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -134,22 +134,20 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
 ];
 
-export default function EmployeeHome() {
+export default function UserOrder() {
   return (
     <Container className='pt_50'>
         <TableContainer component={Paper}>
         <Table  aria-label="collapsible table">
             <TableHead>
-            <TableRow>
-                <TableCell />
-                <TableCell align="center" > client name </TableCell>
-                <TableCell align="center"> request state </TableCell>
-                <TableCell align="center"> delivary state </TableCell>
-                <TableCell align="center"> total salary </TableCell>
-                <TableCell align="center"> start working </TableCell>
-                <TableCell align="center"> Finish the order </TableCell>
-                <TableCell align="center"> Cancel order </TableCell>
-            </TableRow>
+                <TableRow>
+                    <TableCell />
+                    <TableCell align="center" > date </TableCell>
+                    <TableCell align="center"> total </TableCell>
+                    <TableCell align="center"> delivary state </TableCell>
+                    <TableCell align="center"> state of order </TableCell>
+                    <TableCell align="center"> cancel </TableCell>
+                </TableRow>
             </TableHead>
             <TableBody>
             {rows.map((row) => (

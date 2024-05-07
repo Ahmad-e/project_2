@@ -1,0 +1,15 @@
+.logo{
+    margin: 10px 40px 10px 30px;
+}
+.svg
+{
+    max-width: 500px;
+    margin: 20px;
+    padding: 20px;
+}
+
+@media only screen and (max-width: 389px) {
+    .logo{
+      margin: 10px;
+    }
+}
