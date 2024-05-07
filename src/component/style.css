@@ -1,0 +1,210 @@
+:root {
+    --main-color: #bb252e ;
+    --sec-color: #a42d35;
+  }
+
+.header {
+    box-shadow: 0px 0px 5px rgb(0 0 0/0.2);
+    position: fixed;
+}
+.dropDown .menu {
+    background-color: white;
+}
+.dropDown .menu .item {
+    color: #bb252e;
+    transition-duration: 0.3s;
+    border-radius: 10px;
+}
+.dropDown .menu .item:hover {
+    background-color: #bb252e;
+    color: white;
+}
+
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--main-color);
+    --bs-btn-border-color: var(--main-color);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--sec-color);
+    --bs-btn-hover-border-color:var(--sec-color);
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--sec-color);
+    --bs-btn-active-border-color: var(--sec-color);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--main-color);
+    --bs-btn-disabled-border-color: var(--main-color);
+    padding: 8px;
+    border-radius: 21px;
+    min-width: 100px;
+    transition:all .3s ease-in-out;
+}
+.btn-primary:hover
+{
+    scale: 1.07;
+    padding: 10px;
+    background-image: linear-gradient(140deg, #bb252f 0%, #a42d35b0 60%, #22222234 75%);
+    border-width: 0px;
+}
+.fixed {
+    position: fixed;
+    top: 0;
+    z-index: 20;
+  }
+
+/* Start footer */
+.footer {
+   
+    background-image: linear-gradient(140deg, #bb252f3b 0%, #a9454520 50%, #a42d3549 75%);
+    padding-top: calc( var(--section-padding) / 2);
+    margin-top: 50px;
+    padding-bottom: calc( var(--section-padding) / 2);
+    
+    background-size: cover;
+    text-align: center;
+    position: relative;
+}
+.footer::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    
+}
+.footer .container {
+    position: relative;
+}
+.footer .container img {
+    width: 40px;
+    margin-bottom: 20px;
+}
+.footer .container p:not(.copyright) {
+    text-transform: uppercase;
+    border-bottom: 1px solid white;
+    position: relative;
+    width: fit-content;
+    padding: 20px;
+    margin: 20px auto;
+    font-size: 20px;
+}
+.footer .container .social-icons .icon {
+    padding: 20px 15px;
+    font-size: 20px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+} 
+.footer .container .social-icons .icon:hover {
+    transform: translateY(-7px);
+    scale: 1.2 ;
+}
+.footer .container .copyright {
+    margin-top: 40px;
+}
+.footer .container .copyright span {
+    color: var(--main-color);
+    font-weight: bold;
+}
+/* End footer */
+
+
+/* Start Card */ 
+.card {
+    max-width: 350px;
+    margin-top: 20px;
+    box-shadow: 0 0 4px rgb(0 0 0/0.2);
+    height: fit-content;
+    overflow: hidden;
+}
+.card .image {
+    min-height: 180px;
+}
+.card .image::before {
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    border-width: 0px 0px 45px 355px;
+    border-color: transparent transparent white transparent;
+    border-style: solid;
+    right: 0;
+    bottom: 0px;
+    transition-duration: 0.3s;
+    z-index: 2;
+}
+.card:hover .image::before {
+    border-width: 0px 550px 70px 0px;
+    border-color: transparent transparent white transparent;
+}
+.card .title {
+    position: relative;
+}
+.card .price {
+    font-size: 30px;
+}
+.card .love,
+.card .cart{
+    font-size: 35px;
+}
+.card .pCart,
+.card .pLove {
+    color: var(--main-color);
+}
+.card .title::after {
+    content: "";
+    position: absolute;
+    width: 20%;
+    height: 5px;
+    background-color: var(--main-color);
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.card .card-btn {
+    position: relative;
+    text-decoration: none;
+    color: var(--main-color);
+    border: 2px solid var(--main-color);
+    width: fit-content;
+    margin: 20px auto;
+    background-color: transparent;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.card .card-btn::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 100%;
+    background-color: var(--main-color);
+    left: -2px;
+    top: 0px;
+    border: 2px solid var(--main-color);
+    border-radius: 10px;
+    transition-duration: 0.3s;
+}
+.card:hover .card-btn::before{
+    width: calc(100% + 2px);
+}
+.card .card-btn span {
+    color: var(--main-color);
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+.card:hover .card-btn span {
+    color: white;
+}
+
+.love:hover
+{
+    transition:all .3s ease-in-out;
+    transform: translateY(-7px);
+    scale: 1.2 ;
+    
+}
+/* End Card */
