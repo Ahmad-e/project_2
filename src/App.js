@@ -27,6 +27,13 @@ import ProductInfo from './user/productInfo';
 import UserOrder from './user/userOrder';
 
 
+import Ads from './admin/ads';
+import Branches from './admin/branches';
+import Employees from './admin/employees';
+import Products from './admin/products';
+import Types from './admin/types';
+import Order from './admin/orders'
+
 function App() {
   return (
     <div className='App dark'>
@@ -46,6 +53,12 @@ function App() {
 
               <Route path="admin" element={<AdminApp />} >
                 <Route path="home" element={<AdminHome />}  />
+                <Route path="employees" element={<Employees />}  />
+                <Route path="keywords" element={<Types />}  />
+                <Route path="products" element={<Products />}  />
+                <Route path="branchs" element={<Branches />}  />
+                <Route path="ads" element={<Ads />}  />
+                <Route path="order" element={<EmployeeHome />}  />
               </Route>
 
 

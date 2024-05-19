@@ -1,0 +1,106 @@
+:root {
+    --main_color: #bb252e ;
+    
+  }
+
+.admin_app
+{
+    display: flex;
+    align-content: space-around;
+    justify-content: center;
+}
+.admin_body
+{
+    width: 80%;
+}
+.admin_header
+{
+    background-color: #bb252f33 ;
+    width: 20%;
+    min-width: 60px;
+    margin-bottom: -50px;
+}
+.Admin_navbar
+{
+    text-align: start;
+}
+.Admin_nav_link
+{
+    transition:all .3s ease-in-out;
+    padding: 20px;
+}
+
+.Admin_nav_link:hover
+{
+    background-color: #bb252f8c  ;
+    font-size: 20px;
+}
+.Admin_nav_link_selected
+{
+    background-color: #bb252f8c  ;
+    font-size: 20px;
+}
+
+@media (max-width: 500px){
+    .disable_in_mobile{
+        display: none;
+    }
+}
+
+
+.admin_col
+{
+    justify-content: center;
+    display: flex;
+}
+.Admin_item_in_home
+{
+    border-radius: 20px;
+    background-color: #3d3d3d21;
+    box-shadow:  0px 1px 1px 0px rgba(0, 0, 0, 0.214), 0px 1px 3px 0px rgba(0, 0, 0, 0.212);
+    margin: 7px;
+    padding: 20px;
+    overflow: auto;
+    align-items: center;
+    display: flex;
+}
+.Admin_item_content
+{
+    padding: 10px;
+    text-align: start;
+}
+.Admin_item_name
+{
+    font-size: 24px;
+    /*color: var(--main_color);*/
+    margin: 0px;
+}
+.Admin_item_danger
+{
+    font-size: small;
+    color: var(--bs-danger);
+    margin: 0px;
+}
+.Admin_item_good
+{
+    font-size: small;
+    color: var(--bs-primary);
+    margin: 0px;
+}
+.Admin_item_number
+{
+    margin: 0px;
+}
+
+input[type="file"]
+{
+    display: none;
+}
+.col_in_change_dialog
+{
+    text-align: center;
+    margin: auto;
+}
+.p_20{
+    padding: 20px ;
+}

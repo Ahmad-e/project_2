@@ -46,6 +46,7 @@
     scale: 1.07;
     padding: 10px;
     background-image: linear-gradient(140deg, #bb252f 0%, #a42d35b0 60%, #22222234 75%);
+    
     border-width: 0px;
 }
 .fixed {
