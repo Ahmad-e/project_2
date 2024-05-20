@@ -17,17 +17,11 @@ import Button from '@mui/material/Button';
 import NightsStayOutlinedIcon from '@mui/icons-material/NightsStayOutlined';
 import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded';
 
-import { useDispatch, useSelector } from 'react-redux';
-import {modeActions} from "../Store/Store"
-
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const mode = useSelector(state=>state.mode);
-  const dispatch = useDispatch();
-  const {toggleMode} = modeActions;
-
+  const mode = "dark";
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const handleProfileMenuOpen = (event) => {
@@ -198,7 +192,6 @@ export default function Header() {
               </Badge>
             </IconButton>
             <IconButton
-            onClick={()=>dispatch(toggleMode())}
               size="large"
               aria-label="show more"
               aria-haspopup="true"

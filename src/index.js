@@ -1,18 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Provider, useSelector } from 'react-redux';
-import store from './Store/Store';
-
-
-
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <App />
-    </Provider>
+    </ThemeProvider>
+    
   </React.StrictMode>
 );

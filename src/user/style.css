@@ -34,17 +34,8 @@
 .carousel
 {
   height: 612px;
-  
 }
 
-.carousel-img
-{
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  object-fit: cover;
-  width: 100%;
-}
 @media only screen and (max-width: 689px) {
   .home-text-main{
     padding:20px;
