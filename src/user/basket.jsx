@@ -75,7 +75,7 @@ const Basket=()=>{
 
     return(
         <Container>
-            <Row className='pt_50 justify-content-center'>
+            <Row className='pt_50 justify-content-cente'>
                 <Col sm={12} md={7} lg={8}>
                 <TableContainer sx={{ borderRadius:"12px" }}  component={Paper}>
                     <Table sx={{ minWidth: 520 , color:"#fff" }} aria-label="simple table">

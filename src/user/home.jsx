@@ -69,7 +69,7 @@ const Home=()=>{
         </div>*/}
         <Container>
             
-            <Row className='justify-content-center' >
+            <Row>
                 <Col>
                 <Card id={1} name="product name" imgURL={Img} disc="long discription from product" salary={10} love={true} />
                 </Col>
