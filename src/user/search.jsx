@@ -14,7 +14,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-
+import Loading from '../component/loading'
 function valuetext(value) {
     return `${value}°C`;
   }
@@ -35,6 +35,7 @@ const Search=()=>{
     
     return(
         <>
+        <Loading />
             <Row style={{ margin:"0px" }} className='justify-content-center'  >
                 <Col style={{ padding: "45px 15px" }} lg={2} md={3} sm={4} xs={12} >
                     <Slider
