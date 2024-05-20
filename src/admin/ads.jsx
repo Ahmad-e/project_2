@@ -100,7 +100,7 @@ const Ads=()=>{
             <br/><br/><br/>
 
             
-            <Row className=' justify-content-cente'>
+            <Row className=' justify-content-center'>
                 <Col  lg={9} md={7} sm={12} >
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
