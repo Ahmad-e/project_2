@@ -215,7 +215,7 @@
 .loading {
     width: 100vw;
     height: 100vh;
-    background-color: rgb(0 0 0 / 40%);
+    background-color: rgb(0 0 0 / 50%);
     position: fixed;
     top: 0px; 
     z-index: 5;
@@ -225,16 +225,19 @@
 }
 .loading::before {
     content: "";
-    width: 35px;
-    height: 35px;
-    border: 4px solid transparent;
-    border-left-color: rgb(0 0 0 / 40%);
+    width: 80px;
+    height: 80px;
+    border: 10px solid transparent;
+    border-left-color: var(--main-color);
+    border-top-color: var(--main-color);
+    border-right-color: var(--main-color);
     position: absolute;
     border-radius: 50%;
     animation-name: rotate;
     animation-duration: 0.5s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+    border-style: dashed;
 }
 @keyframes rotate {
     0% {

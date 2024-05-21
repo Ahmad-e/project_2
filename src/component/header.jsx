@@ -186,12 +186,13 @@ export default function Header() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
           <Button
+              href='login'
               aria-haspopup="true"
               sx={{ color:"#bb252e" , padding: "0px 20px" }}
             >
               login
           </Button>
-            <button type="button" class="btn btn-primary">SIGN IN</button>
+            <button onClick={()=>document.location.assign("register")} type="button" class="btn btn-primary">SIGN UP</button>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
