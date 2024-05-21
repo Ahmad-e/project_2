@@ -15,6 +15,8 @@ import Profile from './user/profile';
 import Err404 from './SVGs/err404';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from './user/home';
+import Register from './user/register';
+import Login from './user/login';
 import Favorite from './user/favorite';
 import AdminHome from './admin/home';
 import DelivaryHome from './delivery/home'
@@ -27,13 +29,41 @@ import ProductInfo from './user/productInfo';
 import UserOrder from './user/userOrder';
 
 
+import Ads from './admin/ads';
+import Branches from './admin/branches';
+import Employees from './admin/employees';
+import Products from './admin/products';
+import Types from './admin/types';
+import Order from './admin/orders'
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+import { useSelector } from 'react-redux';
+import { dark } from '@mui/material/styles/createPalette';
+
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
+
+
 function App() {
+  const mode = useSelector((state) => state.mode);
   return (
-    <div className='App dark'>
+    <ThemeProvider theme={ mode==="dark" ? darkTheme : lightTheme}>
+    <div className={'App '+mode}>
       <BrowserRouter >
         <Header />
           <Routes>
               <Route index element={<Home />} />
+              <Route path="register" element={<Register />} />
+              <Route path="login" element={<Login />} />
               <Route path="basket" element={<Basket />} />
               <Route path="profile" element={<Profile />} />
               <Route path="search" element={<Searh />} />
@@ -46,6 +76,12 @@ function App() {
 
               <Route path="admin" element={<AdminApp />} >
                 <Route path="home" element={<AdminHome />}  />
+                <Route path="employees" element={<Employees />}  />
+                <Route path="keywords" element={<Types />}  />
+                <Route path="products" element={<Products />}  />
+                <Route path="branchs" element={<Branches />}  />
+                <Route path="ads" element={<Ads />}  />
+                <Route path="order" element={<EmployeeHome />}  />
               </Route>
 
 
@@ -62,6 +98,7 @@ function App() {
         <Footer />
       </BrowserRouter>
     </div>
+    </ThemeProvider>
   );
 }
 
