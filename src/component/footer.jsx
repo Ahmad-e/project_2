@@ -1,11 +1,16 @@
 import { faFacebook, faInstagram, faLinkedin, faTiktok, faTwitch, faTwitter, faXTwitter, faYoutube } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Logo from '../SVGs/logo'
+import Button from '@mui/material/Button';
 const Footer=()=>{
     return(
         <div className="footer py-3">
         <div className="container">
-            <Logo />
+            <Button
+                href="/"
+                sx={{ color:"#bb252e" , borderRadius:"50px" ,    margin: "10px 40px 10px 30px" }}>
+                <Logo  />
+            </Button>
             <p>We are Social</p>
             <div class="social-icons">
                 <FontAwesomeIcon className="icon" icon={faTiktok}/>

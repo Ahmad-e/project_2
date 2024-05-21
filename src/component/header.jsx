@@ -136,7 +136,12 @@ export default function Header() {
         position="static" 
         sx={mode==="dark" ? ({ backgroundColor: "#222" , color : "#fffdfd" }) :({ backgroundColor: "#fffdfd" , color : "#222" })  }>
         <Toolbar>
-          <Logo />
+          <Button
+          href='/'
+            sx={{ color:"#bb252e" , borderRadius:"50px" ,    margin: "10px 40px 10px 30px" }}>
+            <Logo  />
+          </Button>
+          
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Button
                 aria-haspopup="true"

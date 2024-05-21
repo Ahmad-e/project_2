@@ -2,7 +2,7 @@ import './style.css';
 
 const Logo=()=>{
     return(
-        <svg className="logo" width="70px" height="66px" viewBox="0 0 60 56" version="1.1">
+        <svg  width="70px" height="66px" viewBox="0 0 60 56" version="1.1">
             <title>Wendy's Logo</title>
             <desc>Created with Sketch.</desc>
             <g id="Rachel---VD" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
