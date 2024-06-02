@@ -6,8 +6,6 @@
 .header {
     box-shadow: 0px 0px 5px rgb(0 0 0/0.2);
     position: fixed;
-    z-index: 4;
-    width: 100%;
 }
 .dropDown .menu {
     background-color: white;
@@ -48,7 +46,6 @@
     scale: 1.07;
     padding: 10px;
     background-image: linear-gradient(140deg, #bb252f 0%, #a42d35b0 60%, #22222234 75%);
-    
     border-width: 0px;
 }
 .fixed {
@@ -59,12 +56,10 @@
 
 /* Start footer */
 .footer {
-   
     background-image: linear-gradient(140deg, #bb252f3b 0%, #a9454520 50%, #a42d3549 75%);
     padding-top: calc( var(--section-padding) / 2);
-    margin-top: 50px;
+    margin-top: 200px;
     padding-bottom: calc( var(--section-padding) / 2);
-    
     background-size: cover;
     text-align: center;
     position: relative;
@@ -115,48 +110,31 @@
 
 
 /* Start Card */ 
-.card {
-    max-width: 350px;
+.productCard {
+    min-width: 250px;
     margin-top: 20px;
     box-shadow: 0 0 4px rgb(0 0 0/0.2);
     height: fit-content;
     overflow: hidden;
 }
-.card .image {
+.productCard .image {
     min-height: 180px;
 }
-.card .image::before {
-    content: "";
-    position: absolute;
-    width: 0px;
-    height: 0px;
-    border-width: 0px 0px 45px 355px;
-    border-color: transparent transparent white transparent;
-    border-style: solid;
-    right: 0;
-    bottom: 0px;
-    transition-duration: 0.3s;
-    z-index: 2;
-}
-.card:hover .image::before {
-    border-width: 0px 550px 70px 0px;
-    border-color: transparent transparent white transparent;
-}
-.card .title {
+.productCard .title {
     position: relative;
 }
-.card .price {
+.productCard .price {
     font-size: 30px;
 }
-.card .love,
-.card .cart{
+.productCard .love,
+.productCard .cart{
     font-size: 35px;
 }
-.card .pCart,
-.card .pLove {
+.productCard .pCart,
+.productCard .pLove {
     color: var(--main-color);
 }
-.card .title::after {
+.productCard .title::after {
     content: "";
     position: absolute;
     width: 20%;
@@ -166,7 +144,7 @@
     left: 50%;
     transform: translateX(-50%);
 }
-.card .card-btn {
+.productCard .card-btn {
     position: relative;
     text-decoration: none;
     color: var(--main-color);
@@ -177,47 +155,48 @@
     border-radius: 10px;
     overflow: hidden;
 }
-.card .card-btn::before {
+.productCard .card-btn::before {
     content: "";
     position: absolute;
     width: 0;
     height: 100%;
     background-color: var(--main-color);
-    left: -2px;
+    left: -13px;
     top: 0px;
     border: 2px solid var(--main-color);
     border-radius: 10px;
     transition-duration: 0.3s;
 }
-.card:hover .card-btn::before{
-    width: calc(100% + 2px);
+.productCard:hover .card-btn::before{
+    width: calc(100% + 19px);
 }
-.card .card-btn span {
+.productCard .card-btn span {
     color: var(--main-color);
     display: block;
     position: relative;
     z-index: 1;
 }
 
-.card:hover .card-btn span {
+.productCard:hover .card-btn span {
     color: white;
 }
 
-.love:hover
+.love:hover,
+.cart:hover
 {
     transition:all .3s ease-in-out;
     transform: translateY(-7px);
     scale: 1.2 ;
     
 }
-/* End Card */
+/* End productCard */
 /* Start Loading */
 .loading {
     width: 100vw;
     height: 100vh;
-    background-color: rgb(0 0 0 / 50%);
+    background-color: rgb(0 0 0 / 40%);
     position: fixed;
-    top: 0px; 
+    /* top: 0px; */
     z-index: 5;
     display: flex;
     justify-content: center;
@@ -225,19 +204,16 @@
 }
 .loading::before {
     content: "";
-    width: 80px;
-    height: 80px;
-    border: 10px solid transparent;
-    border-left-color: var(--main-color);
-    border-top-color: var(--main-color);
-    border-right-color: var(--main-color);
+    width: 35px;
+    height: 35px;
+    border: 4px solid transparent;
+    border-left-color: rgb(0 0 0 / 40%);
     position: absolute;
     border-radius: 50%;
     animation-name: rotate;
     animation-duration: 0.5s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    border-style: dashed;
 }
 @keyframes rotate {
     0% {
@@ -251,3 +227,14 @@
     }
 }
 /* End Loading */
+/* Start Header */
+.header {
+    position: fixed;
+    z-index: 4;
+    width: 100%;
+}
+.height_top
+{
+    height: 172px;
+}
+/* End Header */

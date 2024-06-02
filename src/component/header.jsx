@@ -131,7 +131,9 @@ export default function Header() {
   
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <>
+
+    <Box className="header position-fixed" sx={{ flexGrow: 1 }}>
       <AppBar 
         position="static" 
         sx={mode==="dark" ? ({ backgroundColor: "#222" , color : "#fffdfd" }) :({ backgroundColor: "#fffdfd" , color : "#222" })  }>
@@ -242,6 +244,9 @@ export default function Header() {
       {renderMenu}
       
     </Box>
+    <div className='height_top'>
 
+</div>
+    </>
   );
 }
