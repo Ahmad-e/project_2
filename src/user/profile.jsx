@@ -1,14 +1,48 @@
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Img from '../images/home2.jpg'
+import Img from '../images/home2.jpg';
+import {useState,useEffect} from 'react';
+
+import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux';
+import {modeActions} from "../Store/Store"
+
 function Profile() {
+    const dispatch = useDispatch();
+    const {setToken,setAcc} = modeActions;
 
-    let mode = "dark";
+
+    const [name,setName]=useState('');
+    const [email,setEmail]=useState('');
+    const [id,setId]=useState('');
+    const [img,setImg]=useState('');
+    const [badget,setbadget]=useState(0);
+    const url = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+
+    useEffect(() => {
+        axios.get( url+"profile",
+            {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization' : 'Bearer ' +token 
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+    }, []);
 
 
-
+    const logOut=()=>{
+        dispatch(setAcc(null))
+        dispatch(setToken(null))
+    }
     return(
         <div className="profile py-md-5">
             <div className="container">
@@ -67,8 +101,8 @@ function Profile() {
                                 <Link to="" className="link col-lg-6">
                                     Money records
                                 </Link>
-                                <Link to="" className="link col-lg-6">
-                                    The Basket
+                                <Link onClick={()=>logOut()} className="link col-lg-6">
+                                    log out
                                 </Link>
                         </div>
                     </div>

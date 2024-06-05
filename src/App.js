@@ -24,10 +24,11 @@ import EmployeeHome from './employee/home'
 import AdminApp from './admin/app';
 import DelivaryApp from './delivery/app';
 import EmployeeApp from './employee/app'
+import SupportEmployee from './employee/support'
 import Support from './user/support'
 import ProductInfo from './user/productInfo';
 import UserOrder from './user/userOrder';
-
+import SelectPoint from './component/selectPoint'
 
 import Ads from './admin/ads';
 import Branches from './admin/branches';
@@ -71,6 +72,7 @@ function App() {
               <Route path="support" element={<Support />} />
               <Route path="product" element={<ProductInfo />} />
               <Route path="orders" element={<UserOrder />} />
+              <Route path="test" element={<SelectPoint />} />
               <Route path="*" element={<Err404 />} />
 
 
@@ -92,6 +94,7 @@ function App() {
 
               <Route path="employee" element={<EmployeeApp />} >
                 <Route path="home" element={<EmployeeHome />} />
+                <Route path="support" element={<SupportEmployee />} />
               </Route>
               
           </Routes>
