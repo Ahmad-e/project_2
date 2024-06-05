@@ -20,6 +20,10 @@
     color: white;
 }
 
+.d_n
+{
+    display: none;
+}
 
 .btn-primary {
     --bs-btn-color: #fff;
@@ -226,15 +230,8 @@
         transform: rotate(360deg);
     }
 }
-/* End Loading */
-/* Start Header */
-.header {
-    position: fixed;
-    z-index: 4;
-    width: 100%;
-}
-.height_top
+.display_non
 {
-    height: 172px;
+    display: none;
 }
-/* End Header */
+/* End Loading */

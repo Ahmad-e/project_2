@@ -16,20 +16,37 @@ import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStore
 import Button from '@mui/material/Button';
 import NightsStayOutlinedIcon from '@mui/icons-material/NightsStayOutlined';
 import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded';
-
+import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
 import {modeActions} from "../Store/Store"
 
 
 export default function Header() {
+  const [types, setTypes] = React.useState([]);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const mode = useSelector(state=>state.mode);
+  const url = useSelector(state=>state.url);
+  const account = useSelector(state=>state.account);
   const dispatch = useDispatch();
   const {toggleMode} = modeActions;
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  React.useEffect(() => {
+    axios.get( url+"showProductTypes")
+        .then((response) => {
+            setTypes(response.data.types)
+        })
+        .catch((error) => {
+            console.log(error)
+        });
+}, []);
+
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -93,37 +110,82 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <LocalGroceryStoreOutlinedIcon />
-          </Badge>
-        </IconButton>
+      
+      <MenuItem onClick={()=>dispatch(toggleMode())}>
+          <IconButton
+              size="large"
+              aria-label="show more"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              { mode==="dark" ? <WbSunnyRoundedIcon /> : <NightsStayOutlinedIcon />  }
+          </IconButton>
       </MenuItem>
-      <MenuItem>
-        { mode==="dark" ? <WbSunnyRoundedIcon /> : <NightsStayOutlinedIcon />  }
+      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("basket")} >
+          <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+          >
+              <Badge badgeContent={17} color="error">
+                <LocalGroceryStoreOutlinedIcon />
+              </Badge>
+          </IconButton>
       </MenuItem>
-      <MenuItem>
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        <p>Notifications</p>
+      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("profile")} >
+      <Button
+                aria-haspopup="true"
+                sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
+              >
+                profile
+            </Button>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
+      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("favorite")} >
+        <Button
+                aria-haspopup="true"
+                sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
+                href='favorite'
+              >
+                favorite
+        </Button>
+      </MenuItem>
+      <MenuItem onClick={()=>document.location.assign("search")}>
+          <Button
+                aria-haspopup="true"
+                sx={{ color:"#bb252e" ,padding: "0px 20px"  }}
+                href='search'
+              >
+                best products
+          </Button>
+      </MenuItem>
+      <MenuItem onClick={()=>document.location.assign("search")}>
+        <Button
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+              sx={{ color:"#bb252e" , padding: "0px 20px" }}
+            >
+              all products
+        </Button>
+      </MenuItem>
+      <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} } onClick={()=>document.location.assign("login")} >
+          <Button
+              href='login'
+              aria-haspopup="true"
+              sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
+            >
+              login
+          </Button>
+      </MenuItem>
+      <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} }>
+        <button 
+              onClick={()=>document.location.assign("register")} 
+              type="button" 
+              className={account==="1" || account==="2"|| account==="3" ?  "d_n" : " btn btn-primary"}>
+                SIGN UP
+        </button>
       </MenuItem>
     </Menu>
   );
@@ -136,7 +198,7 @@ export default function Header() {
     <Box className="header position-fixed" sx={{ flexGrow: 1 }}>
       <AppBar 
         position="static" 
-        sx={mode==="dark" ? ({ backgroundColor: "#222" , color : "#fffdfd" }) :({ backgroundColor: "#fffdfd" , color : "#222" })  }>
+        sx={mode==="dark" ? ({}) :({ backgroundColor: "#fffdfd" , color : "#222" })  }>
         <Toolbar>
           <Button
           href='/'
@@ -147,17 +209,24 @@ export default function Header() {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Button
                 aria-haspopup="true"
-                sx={{ color:"#bb252e" ,padding: "0px 20px" }}
                 href='/profile'
+                sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
               >
                 profile
             </Button>
             <Button
                 aria-haspopup="true"
-                sx={{ color:"#bb252e",padding: "0px 20px" }}
+                sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
                 href='favorite'
               >
                 favorite
+            </Button>
+            <Button
+                aria-haspopup="true"
+                sx={{ color:"#bb252e" ,padding: "0px 20px"  }}
+                href='search'
+              >
+                best products
             </Button>
             <Button
               id="basic-button"
@@ -167,7 +236,7 @@ export default function Header() {
               onClick={handleClick}
               sx={{ color:"#bb252e" , padding: "0px 20px" }}
             >
-              products
+              all products
             </Button>
             <Menu
               
@@ -179,9 +248,13 @@ export default function Header() {
                 'aria-labelledby': 'basic-button',
               }}
             >
-              <MenuItem  onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              {
+                types.map((item)=>{
+                  return(
+                    <MenuItem onClick={handleClose}>{item.name}</MenuItem>
+                  )
+                })
+              }
             </Menu>
             </Box>
 
@@ -190,23 +263,28 @@ export default function Header() {
           <Button
               href='login'
               aria-haspopup="true"
-              sx={{ color:"#bb252e" , padding: "0px 20px" }}
+              sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
             >
               login
           </Button>
-            <button onClick={()=>document.location.assign("register")} type="button" class="btn btn-primary">SIGN UP</button>
-            <IconButton
+            <button 
+              onClick={()=>document.location.assign("register")} 
+              type="button" 
+              className={account==="1" || account==="2"|| account==="3" ?  "d_n" : " btn btn-primary"}>
+                SIGN UP
+            </button>
+          <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
               href='basket'
-            >
+          >
               <Badge badgeContent={17} color="error">
                 <LocalGroceryStoreOutlinedIcon />
               </Badge>
             </IconButton>
             <IconButton
-            onClick={()=>dispatch(toggleMode())}
+              onClick={()=>dispatch(toggleMode())}
               size="large"
               aria-label="show more"
               aria-haspopup="true"
@@ -216,13 +294,7 @@ export default function Header() {
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-          <Button
-              aria-haspopup="true"
-              sx={{ color:"#bb252e" }}
-            >
-              login
-          </Button>
-            <button type="button" class="btn btn-primary">SIGN IN</button>
+            
             <IconButton
               size="large"
               aria-label="show more"
