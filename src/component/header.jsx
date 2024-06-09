@@ -194,7 +194,7 @@ export default function Header() {
 
   return (
     <>
-
+    
     <Box className="header position-fixed" sx={{ flexGrow: 1 }}>
       <AppBar 
         position="static" 
@@ -316,7 +316,7 @@ export default function Header() {
       {renderMenu}
       
     </Box>
-    <div className='height_top'>
+    <div className='top_div_header'>
 
 </div>
     </>
