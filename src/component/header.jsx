@@ -30,6 +30,7 @@ export default function Header() {
   const mode = useSelector(state=>state.mode);
   const url = useSelector(state=>state.url);
   const account = useSelector(state=>state.account);
+  const basket = useSelector(state=>state.basket);
   const dispatch = useDispatch();
   const {toggleMode} = modeActions;
 
@@ -121,18 +122,18 @@ export default function Header() {
               { mode==="dark" ? <WbSunnyRoundedIcon /> : <NightsStayOutlinedIcon />  }
           </IconButton>
       </MenuItem>
-      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("basket")} >
+      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("/basket")} >
           <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
           >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={basket.length} color="error">
                 <LocalGroceryStoreOutlinedIcon />
               </Badge>
           </IconButton>
       </MenuItem>
-      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("profile")} >
+      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("/profile")} >
       <Button
                 aria-haspopup="true"
                 sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
@@ -140,25 +141,25 @@ export default function Header() {
                 profile
             </Button>
       </MenuItem>
-      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("favorite")} >
+      <MenuItem sx={account ==="3" ?  {} : {display: "none"}} onClick={()=>document.location.assign("/favorite")} >
         <Button
                 aria-haspopup="true"
                 sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
-                href='favorite'
+                
               >
                 favorite
         </Button>
       </MenuItem>
-      <MenuItem onClick={()=>document.location.assign("search")}>
+      <MenuItem onClick={()=>document.location.assign("/search/-1/-1")}>
           <Button
                 aria-haspopup="true"
                 sx={{ color:"#bb252e" ,padding: "0px 20px"  }}
-                href='search'
+                
               >
                 best products
           </Button>
       </MenuItem>
-      <MenuItem onClick={()=>document.location.assign("search")}>
+      <MenuItem>
         <Button
               id="basic-button"
               aria-controls={open ? 'basic-menu' : undefined}
@@ -170,9 +171,8 @@ export default function Header() {
               all products
         </Button>
       </MenuItem>
-      <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} } onClick={()=>document.location.assign("login")} >
+      <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} } onClick={()=>document.location.assign("/login")} >
           <Button
-              href='login'
               aria-haspopup="true"
               sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
             >
@@ -181,7 +181,7 @@ export default function Header() {
       </MenuItem>
       <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} }>
         <button 
-              onClick={()=>document.location.assign("register")} 
+              onClick={()=>document.location.assign("/register")} 
               type="button" 
               className={account==="1" || account==="2"|| account==="3" ?  "d_n" : " btn btn-primary"}>
                 SIGN UP
@@ -217,14 +217,14 @@ export default function Header() {
             <Button
                 aria-haspopup="true"
                 sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
-                href='favorite'
+                href='/favorite'
               >
                 favorite
             </Button>
             <Button
                 aria-haspopup="true"
                 sx={{ color:"#bb252e" ,padding: "0px 20px"  }}
-                href='search'
+                href='/search/-1/-1'
               >
                 best products
             </Button>
@@ -235,6 +235,7 @@ export default function Header() {
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
               sx={{ color:"#bb252e" , padding: "0px 20px" }}
+              
             >
               all products
             </Button>
@@ -251,7 +252,7 @@ export default function Header() {
               {
                 types.map((item)=>{
                   return(
-                    <MenuItem onClick={handleClose}>{item.name}</MenuItem>
+                    <MenuItem onClick={()=>window.location.href = ('/search/-1/'+item.id)}>{item.name}</MenuItem>
                   )
                 })
               }
@@ -261,14 +262,14 @@ export default function Header() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
           <Button
-              href='login'
+              href='/login'
               aria-haspopup="true"
               sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
             >
               login
           </Button>
             <button 
-              onClick={()=>document.location.assign("register")} 
+              onClick={()=>document.location.assign("/register")} 
               type="button" 
               className={account==="1" || account==="2"|| account==="3" ?  "d_n" : " btn btn-primary"}>
                 SIGN UP
@@ -277,9 +278,10 @@ export default function Header() {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
-              href='basket'
+              href='/basket'
+              sx={account==="3"  ?  {} : {display:"none"}}
           >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={basket.length} color="error">
                 <LocalGroceryStoreOutlinedIcon />
               </Badge>
             </IconButton>

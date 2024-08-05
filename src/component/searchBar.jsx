@@ -11,6 +11,11 @@ import Row from 'react-bootstrap/Row';
 
 const SearchBar =()=>{
     const mode = "datk"
+    const [text,setText]=React.useState('-1');
+
+    const handleChangeText=(event)=>{
+        setText(event.target.value)
+    }
     return (
         <Container>
             <Row  className="justify-content-center">
@@ -21,11 +26,11 @@ const SearchBar =()=>{
                 >
                 <InputBase
                     sx={{ ml: 1, flex: 1 }}
-                    
-                    placeholder="Search Google Maps"
+                    onChange={handleChangeText}
+                    placeholder="Search for product name"
                     inputProps={{ 'aria-label': 'search google maps' }}
                 />
-                <IconButton href='search' type="button" sx={{ p: '10px' }} aria-label="search">
+                <IconButton href={text==="" ? ('/search/-1/-1') : ('/search/'+text+'/-1')} type="button" sx={{ p: '10px' }} aria-label="search">
                     <SearchIcon />
                 </IconButton>
                 </Paper>

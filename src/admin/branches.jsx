@@ -56,7 +56,7 @@ const Branches=()=>{
     //const [errLing, setErrLing] = React.useState(0);
 
 
-    const [city, setCity] = React.useState('');
+    const [city, setCity] = React.useState(0);
     const [openChangeDialog, setOpenChangeDialog] = React.useState(false);
 
 

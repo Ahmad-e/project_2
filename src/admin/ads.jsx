@@ -19,7 +19,9 @@ import Button from '@mui/material/Button';
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import SaveAsTwoToneIcon from '@mui/icons-material/SaveAsTwoTone';
 
-
+import Loading from '../component/loading';
+import axios from "axios";
+import {  useSelector } from 'react-redux';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -45,13 +47,19 @@ function createData(name, calories, fat, carbs, protein) {
   ];
 
 const Ads=()=>{
-
+    const [loading,setLoading] = React.useState(false);
     const [image, setImage] = React.useState("");
+    const [file, setFile] = React.useState(0);
     const [url, seturl] = React.useState("");
     const [errUrl, setErrUrl] = React.useState(false);
 
     const [disc, setDisc] = React.useState("");
     const [errDisc, setErrdisc] = React.useState(false);
+
+    const [idToDelete, setIdToDelete] = React.useState(0);
+    const [data, setData] = React.useState([]);
+    const apiurl = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
 
     const handleChangeDisc =(value)=>{
         setDisc(value.target.value);
@@ -80,10 +88,77 @@ const Ads=()=>{
         setImage({ name: input.files[0].name, src: dataURL });
       };
       reader.readAsDataURL(input.files[0]);
+
+      if (file.target.files) {
+        setFile(file.target.files[0]);
+      }
+
     };
+
+    React.useEffect(() => {
+        axios.get(apiurl+"home")
+            .then((response) => {
+                setData(response.data.ads)
+            })
+            .catch((error) => console.log(error));
+    }, []);
+
+    const addNew=()=>{
+        if(url && disc && file)
+        {
+            var form = new FormData();
+            form.append('link', url);
+            form.append('disc', disc);
+            form.append('img_url', file);
+            setLoading(true);
+            try {
+                const response = axios.post(apiurl+'shareAd',
+                form,
+                {
+                    headers:{
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization' : 'Bearer ' +token ,
+                        'Accept':"application/json"
+                    }
+                }
+                ).then((response) => {
+                    console.log(response.data);
+                    setData(response.data.ads)
+                    setLoading(false)
+                }).catch((error) => {
+                    console.log(error)
+                    setLoading(false)
+                });
+            } catch (e) {
+                throw e;
+            }
+
+        }
+    }
+    const deleteItem=()=>{
+        setOpenDealog(false);
+        setLoading(true);
+        axios.get(apiurl+"deleteAd/"+idToDelete,
+        {
+            headers:{
+            'Authorization' : 'Bearer ' +token ,
+            }
+        })
+            .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.ads)
+                    setLoading(false)
+                })
+            .catch((error) =>{
+                console.log(error);
+                setLoading(false);
+            });
+    }
+
 
     return(
         <Container>
+            <Loading  loading={loading} />
             <Carousel>
                 <Carousel.Item interval={60000}>
                 <img id="imagen1" src={image.src} alt="Upload image to show it" className='carousel-img'  text="First slide" />
@@ -113,18 +188,18 @@ const Ads=()=>{
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {rows.map((row) => (
+                            {data.map((row) => (
                                 <TableRow
-                                key={row.name}
+                                key={row.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                 <TableCell align="center">
-                                <img src={Img} className='table-c-img' />
+                                <img src={row.img_url} className='table-c-img' />
                                 </TableCell>
-                                <TableCell align="center">{row.calories}</TableCell>
-                                <TableCell align="center">{row.fat}</TableCell>
+                                <TableCell align="center">{row.disc}</TableCell>
+                                <TableCell align="center">{row.link}</TableCell>
                                 <TableCell align="center">
-                                     <Button onClick={()=> setOpenDealog(true)} sx={{ color:"#bb252e" }} >
+                                     <Button onClick={()=> {setOpenDealog(true); setIdToDelete(row.id)}} sx={{ color:"#bb252e" }} >
                                         Delete
                                     </Button> </TableCell>
                                 </TableRow>
@@ -157,7 +232,7 @@ const Ads=()=>{
                         onChange={handleChangeurl}
                         />
                         <br/><br/>
-                    <button href={url} type="button" class="btn btn-primary"> save data <SaveAsTwoToneIcon /> </button>
+                    <button onClick={()=>addNew()} type="button" class="btn btn-primary"> save data <SaveAsTwoToneIcon /> </button>
                 </Col>
             </Row>
             <br/><br/><br/>
@@ -173,13 +248,11 @@ const Ads=()=>{
                 <DialogContentText id="alert-dialog-slide-description">
                 
                 Are you sure to delete permanently?
-
-
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                 <Button className="App_button" onClick={()=>setOpenDealog(false)}>close</Button>
-                <Button className="App_button" onClick={()=>setOpenDealog(false)}>delete</Button>
+                <Button className="App_button" onClick={()=>deleteItem() }>delete</Button>
                 </DialogActions>
             </Dialog>
         </Container>

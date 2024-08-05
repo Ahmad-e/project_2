@@ -10,7 +10,7 @@ const modeSlice = createSlice({
         token: Cookies.get("ToKEn"),
         account: Cookies.get("AcC"),
         Language:Cookies.get("Language"),
-        basket:{},
+        basket:Cookies.get('BaKet_W') ? (JSON.parse(Cookies.get('BaKet_W'))) : ([]),
         url:"http://127.0.0.1:8000/api/"
     },
     reducers: {
@@ -50,7 +50,69 @@ const modeSlice = createSlice({
                 window.location.href = '/profile';
             else
                 window.location.href = '/';
+        },
+        clearBasket:(state)=>{
+            state.basket=[];
+            Cookies.remove('BaKet_W');
+            console.log( state.basket)
+        },
+        addProduct:(state,value)=>{
+            var newArr = [];
+            for(var i=0;i<state.basket.length;i++)
+                {  
+                    if(JSON.parse(JSON.stringify(state.basket[i])).id===value.payload.id)
+                    {
+                        newArr = JSON.parse(JSON.stringify(state.basket))
+                        newArr[i].quantity=newArr[i].quantity+1;
+                        state.basket=newArr
+                        Cookies.set('BaKet_W',  JSON.stringify(state.basket), { expires: 70 });
+                        return
+                    }
+
+                }
+            state.basket=[...state.basket, value.payload];
+            Cookies.set('BaKet_W',  JSON.stringify(state.basket), { expires: 70 });
+            //console.log(state.basket)
         }
+        ,deleteProduct:(state,value)=>{
+            var newArr = [];
+            for(var i=0;i<state.basket.length;i++)
+                {  
+                    if(JSON.parse(JSON.stringify(state.basket[i])).id===value.payload)
+                    {
+                        newArr = JSON.parse(JSON.stringify(state.basket))
+                        if(newArr[i].quantity > 1)
+                        {
+                            newArr[i].quantity = newArr[i].quantity - 1;
+                            state.basket=newArr
+                            Cookies.set('BaKet_W',  JSON.stringify(state.basket), { expires: 70 });
+                            return
+                        }
+                        /*else if(newArr[i].quantity === 1)
+                            {
+                               
+                            }*/
+                    }
+
+                }
+        },
+        deleteFullProduct(state,value){
+            var newArr = [];
+            var oldArr = JSON.parse(JSON.stringify(state.basket))
+            for(var i=0;i<oldArr.length;i++)
+                {  
+                  if(i!==value.payload)
+                  {
+                    newArr.push(oldArr[i])
+                  }
+                }
+
+            state.basket=newArr;
+            Cookies.set('BaKet_W',  JSON.stringify(state.basket), { expires: 70 });
+            console.log(state.basket)
+            
+        }
+        
     }
 })
 

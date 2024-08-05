@@ -21,7 +21,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -29,11 +28,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
-
-import ListItemText from '@mui/material/ListItemText';
-import ListItemButton from '@mui/material/ListItemButton';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -44,50 +38,77 @@ import Card from '../component/card'
 
 import Img from '../images/home2.jpg';
 
-//import axios from "axios";
+import Loading from '../component/loading';
+import axios from "axios";
+import {  useSelector } from 'react-redux';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-  
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
+
+
 
 const Products=()=>{
-    const [name, setName] = React.useState(0);
-    const [disc, setDisc] = React.useState(0);
+    const [name, setName] = React.useState("");
+    const [disc, setDisc] = React.useState("");
     const [type, setType] = React.useState(0);
+    const [salary, setSalary] = React.useState(0);
+    const [image, setImage] = React.useState(0);
 
     const [errname, seterrName] = React.useState(false);
     const [errdisc, seterrDisc] = React.useState(false);
     const [errtype, seterrType] = React.useState(false);
+    const [errSalary, seterrSalary] = React.useState(false);
 
+    const [productIdToDelete, setProductIdToDelete] = React.useState(0);
 
     const [changeType, setChangeType] = React.useState(0);
     const [changename, setchangeName] = React.useState(0);
     const [changedisc, setchangeDisc] = React.useState(0);
     const [opendeleteDialog, setOpendeleteDialog] = React.useState(false);
 
+    const [loading,setLoading] = React.useState(false);
+    const [types,settypes] = React.useState([]);
+    const [products,setproducts] = React.useState([]);
+    const apiurl = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+    React.useEffect(() => {
+        //setLoading(true);
+        axios.get(apiurl+"showProducts")
+            .then((response) => {
+                settypes(response.data.products_types)
+                setproducts(response.data.products)
+            })
+            .catch((error) => console.log(error));
+    }, []);
+
 
     const handleChangeName = (event) => {
         setName(event.target.value);
+        if(event.target.value === "")
+            seterrName(true);
+        else
+            seterrName(false);
     };
 
     const handleChangeDisc = (event) => {
         setDisc(event.target.value);
+        if(event.target.value === "")
+            seterrDisc(true);
+        else
+            seterrDisc(false);
     };
 
     const handleChangeType = (event) => {
         setType(event.target.value);
+    };
+    const handleChangeSalary = (event) => {
+        setSalary(event.target.value);
+        if(event.target.value <= 0)
+            seterrSalary(true);
+        else
+            seterrSalary(false);
     };
 
     
@@ -130,11 +151,75 @@ const Products=()=>{
   const handleClose = () => {
     setOpenChangeDialog(false);
   };
+  const handleChangeFile=(e)=>{
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+      
+    }
+  }
 
 
+  const addProduct =()=>{
+    console.log(token);
+
+
+    if(name!=="" && disc !=="" && type!==0 && salary>0 && image)
+        {
+            var form = new FormData();
+            form.append('name', name);
+            form.append('disc', disc);
+            form.append('type_id', type);
+            form.append('price', salary);
+            form.append('quantity', 100);
+            form.append('img_url', image);
+            setLoading(true);
+            try {
+                const response = axios.post(apiurl+'addProduct',
+                form,
+                {
+                    headers:{
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization' : 'Bearer ' +token ,
+                        'Accept':"application/json"
+                    }
+                }
+                ).then((response) => {
+                    console.log(response.data);
+                    setproducts(response.data.products)
+                    setLoading(false)
+                }).catch((error) => {
+                    console.log(error)
+                    setLoading(false)
+                });
+            } catch (e) {
+                throw e;
+            }
+        }
+  }
+    const tuggleBlock =()=>{
+        //console.log(productIdToDelete);
+        setOpendeleteDialog(false)
+        setLoading(true);
+        axios.get(apiurl+"toggleBlockProduct/"+productIdToDelete,
+        {
+            headers:{
+            'Authorization' : 'Bearer ' +token ,
+            }
+        })
+            .then((response) => {
+                    console.log(response.data);
+                    setproducts(response.data.products)
+                    setLoading(false)
+                })
+            .catch((error) =>{
+                console.log(error);
+                setLoading(false);
+            });
+    }
 
     return(
         <Container>
+            <Loading  loading={loading} />
             <br/><br/>
             <Row className=' justify-content-center'>
                 <Col  lg={9} md={7} sm={12} >
@@ -151,25 +236,25 @@ const Products=()=>{
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {rows.map((row) => (
+                            {products.map((row) => (
                                 <TableRow
-                                key={row.name}
+                                key={row.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                 <TableCell align="center">
-                                    <img style={{ borderRadius:"9px" }} src={Img} className='table-c-img' />
+                                    <img style={{ borderRadius:"9px" }} src={row.img_url} className='table-c-img' />
                                 </TableCell>
-                                <TableCell align="center">long disc</TableCell>
-                                <TableCell align="center">{row.calories}</TableCell>
-                                <TableCell align="center">{row.fat}</TableCell>
+                                <TableCell align="center">{row.name}</TableCell>
+                                <TableCell align="center">{row.type_name}</TableCell>
+                                <TableCell align="center">{row.disc}</TableCell>
                                 <TableCell align="center">
                                      <Button onClick={()=>handleClickOpenChangeDialog(true)} sx={{ color:"#bb252e" }} >
                                         change
                                     </Button>
                                 </TableCell>
                                 <TableCell align="center">
-                                     <Button onClick={handleClickOpenDeleteDialog} sx={{ color:"#bb252e" }} >
-                                        delete
+                                     <Button onClick={()=>{setProductIdToDelete(row.id); handleClickOpenDeleteDialog()}} sx={{ color:"#bb252e" }} >
+                                        {row.visible===1 ? "delete" : "recovery"}
                                     </Button>
                                 </TableCell>
                                 </TableRow>
@@ -180,42 +265,56 @@ const Products=()=>{
                 </Col>
                 <Col  lg={3} md={5} sm={10} >
                     <br/>
-                    <input accept="image/*"  type="file" id="inputFile1" />
+                    <input accept="image/*" onChange={handleChangeFile}  type="file" id="inputFile1" />
                     <label className="btn-primary btn" for="inputFile1" > Upload image <FileUploadRoundedIcon/> </label>
                     <br/><br/>
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">type</InputLabel>
                         <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={type}
-                        label="type"
-                        onChange={handleChangeType}
+                            error={errtype}
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={type}
+                            label="type"
+                            onChange={handleChangeType}
                         >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                            {
+                                types.map((item)=>{
+                                    return(
+                                        <MenuItem value={item.id}>{item.name}</MenuItem>
+                                    )
+                                })
+                            }
                         </Select>
                     </FormControl>
                     <br/><br/>
-                    <TextField
-                        type='number'
-                        
-                        id="outlined-error-helper-text"
-                        label="name"
-                        defaultValue=""
-                        helperText="This field must not be empty"
-                        onChange={handleChangeName}
-                        />
                         <TextField
-                        id="outlined-error-helper-text"
-                        label="description"
-                        defaultValue=""
-                        helperText="This field must not be empty"
-                        onChange={disc}
-                        />
+                            error={errname}
+                            id="outlined-error-helper-text"
+                            label="name"
+                            defaultValue=""
+                            helperText="This field must not be empty"
+                            onChange={handleChangeName}
+                            />
+                        <TextField
+                            error={errdisc}
+                            id="outlined-error-helper-text"
+                            label="description"
+                            defaultValue=""
+                            helperText="This field must not be empty"
+                            onChange={handleChangeDisc}
+                            />
+                        <TextField
+                            error={errSalary}
+                            type='number'
+                            min={0}
+                            id="outlined-error-helper-text"
+                            label="salary"
+                            helperText="This field must not be empty"
+                            onChange={handleChangeSalary}
+                            />
                         <br/><br/>
-                    <button onClick={()=>AddBramch()}  type="button" class="btn btn-primary "> save data <SaveAsTwoToneIcon /> </button>
+                    <button onClick={()=>addProduct()}  type="button" class="btn btn-primary "> save data <SaveAsTwoToneIcon /> </button>
                 </Col>
             </Row>
             <br/><br/><br/>
@@ -300,13 +399,12 @@ const Products=()=>{
                 <DialogTitle> Deleting product </DialogTitle>
                 <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                    Deleting means that the item will no longer be visible to users <br/>
-                    The item can be recovered after deleting it
+                    Delet and recovery returning an item means that it will or may not appear to customers
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button className="App_button" onClick={handleCloseDeleteDialog}>close</Button>
-                <Button className="App_button" onClick={handleCloseDeleteDialog}>delete</Button>
+                <Button className="App_button" sx={{ color:"#bb252e" }} onClick={handleCloseDeleteDialog}>close</Button>
+                <Button className="App_button" sx={{ color:"#bb252e" }} onClick={()=>tuggleBlock()}>delete</Button>
                 </DialogActions>
             </Dialog>
         </Container>

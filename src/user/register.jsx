@@ -218,7 +218,7 @@ export default function Register() {
             onChange={handleChangeGender}
             aria-label="Platform"
           >
-            <ToggleButton value="mail">mail</ToggleButton>
+            <ToggleButton value="male">mail</ToggleButton>
             <ToggleButton value="female">female</ToggleButton>
           </ToggleButtonGroup>
         </FormControl>

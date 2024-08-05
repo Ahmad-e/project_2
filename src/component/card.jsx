@@ -2,11 +2,17 @@ import { faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {modeActions} from "../Store/Store"
+
 
 function Card(param) {
     
     const [isLove,setIsLove] =  useState(false);
     const [isAdded,setIsAdded] =  useState(false);
+
+    const {addProduct} = modeActions;
+    const dispatch = useDispatch();
 
     return (
         <div className='productCard my-5 text-center mx-5 rounded'>
@@ -24,7 +30,18 @@ function Card(param) {
                         style={{
                         color: isAdded ? "#b0171f" : "",
                         }}
-                        onClick={()=>setIsAdded(prev => !prev)}
+                        onClick={()=>{
+                            setIsAdded(true);
+                            dispatch(addProduct(
+                                {
+                                    id:param.id,
+                                    name:param.name,
+                                    imgURL:param.imgURL,
+                                    salary:param.salary ,
+                                    quantity:1,
+                                }
+                            ))
+                        }}
                         cursor={"pointer"}
                         icon={faCartShopping}/>
                         <p className='pCart'>{isAdded ? "Added" : "Add"}</p>
@@ -43,7 +60,7 @@ function Card(param) {
                 </Link>
             </div>
         </div>
-)
+    )
 };
 
 export default Card;

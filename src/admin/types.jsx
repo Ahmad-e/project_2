@@ -24,10 +24,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
-
+import Loading from '../component/loading';
+import axios from "axios";
+import {  useSelector } from 'react-redux';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
+
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -43,11 +46,24 @@ function createData(name, calories, fat, carbs, protein) {
   ];
 
 const Types=()=>{
+    const [loading,setLoading] = React.useState(false);
+    const [data,setData] = React.useState([]);
+    const apiurl = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+    React.useEffect(() => {
+        //setLoading(true);
+        axios.get(apiurl+"showProductTypes")
+            .then((response) => setData(response.data.types))
+            .catch((error) => console.log(error));
+    }, []);
 
     const [url, seturl] = React.useState("");
+
     const [errUrl, setErrUrl] = React.useState(false);
     const [openChangeDialog, setOpenChangeDialog] = React.useState(false);
-
+    const [tIdToChange, setTIdToChange] = React.useState(0);
+    const [tNaneToChange, setTNameToChange] = React.useState("");
+    const [errtNaneToChange, seterrTNameToChange] = React.useState("");
     const handleChangeurl =(value)=>{
         seturl(value.target.value);
         if(value.target.value==="")
@@ -56,16 +72,81 @@ const Types=()=>{
             setErrUrl(false);
     }
 
-    const handleClickOpenChangeDialog = () => {
+    const handleChangeNewData =(value)=>{
+        setTNameToChange(value.target.value);
+        if(value.target.value==="")
+            seterrTNameToChange(true);
+        else
+            seterrTNameToChange(false);
+    }
+
+    const handleClickOpenChangeDialog = (Tid) => {
         setOpenChangeDialog(true);
+        setTIdToChange(Tid)
     };
     const handleCloseChangeDialog = () => {
         setOpenChangeDialog(false);
     };
 
+    const addTProduct = ()=>{
+        if(url!=="")
+        {
+            setLoading(true);
+            try {
+                const response = axios.post(apiurl+'addProductType', {
+                    name:url
+                },{
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization' : 'Bearer ' +token 
+                    }
+                }
+                ).then((response) => {
+                    setData(response.data.types);
+                    console.log(response.data);
+                    setLoading(false)
+                }).catch((error) => {
+                    console.log(error)
+                    setLoading(false)
+                });
+            } catch (e) {
+                throw e;
+            }
+        }
+    }
+
+    const changeTProduct = ()=>{
+        if(tNaneToChange!=="")
+        {
+            setLoading(true);
+            try {
+                const response = axios.post(apiurl+'editProductType', {
+                    id:tIdToChange ,
+                    name:tNaneToChange
+                },{
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization' : 'Bearer ' +token 
+                    }
+                }
+                ).then((response) => {
+                    setData(response.data.types);
+                    console.log(response.data);
+                    setLoading(false)
+                }).catch((error) => {
+                    console.log(error)
+                    setLoading(false)
+                });
+                setOpenChangeDialog(false);
+            } catch (e) {
+                throw e;
+            }
+        }
+    }
 
     return(
         <Container>
+            <Loading  loading={loading} />
             <br/><br/>
             <Row className=' justify-content-center'>
                 <Col style={{ display: "flex" }} className=' justify-content-center' lg={7} md={6} sm={12} >
@@ -78,16 +159,16 @@ const Types=()=>{
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {rows.map((row) => (
+                            {data.map((row) => (
                                 <TableRow
-                                key={row.name}
+                                key={row.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                 <TableCell align="center">
-                                    text - text
+                                    {row.name}
                                 </TableCell>
                                 <TableCell align="center">
-                                     <Button onClick={handleClickOpenChangeDialog} sx={{ color:"#bb252e" }} >
+                                     <Button onClick={()=>handleClickOpenChangeDialog(row.id)} sx={{ color:"#bb252e" }} >
                                         change data
                                     </Button> </TableCell>
                                 </TableRow>
@@ -108,7 +189,7 @@ const Types=()=>{
                         onChange={handleChangeurl}
                         />
                         <br/><br/>
-                    <button href={url} type="button" class="btn btn-primary "> save data <SaveAsTwoToneIcon /> </button>
+                    <button onClick={()=>addTProduct()} type="button" class="btn btn-primary "> save data <SaveAsTwoToneIcon /> </button>
                 </Col>
             </Row>
             <br/><br/><br/>
@@ -125,18 +206,19 @@ const Types=()=>{
                 <DialogContentText id="alert-dialog-slide-description">
                 <br/>
                     <TextField
-                    id="outlined-error-helper-text"
-                    label="ling"
-                    defaultValue=""
-                    helperText="This field must not be empty"
+                    error={errtNaneToChange}
                     
+                    label="name"
+                    defaultValue=""
+                    helperText={ errtNaneToChange ?  "This field must not be empty" : ""}
+                    onChange={handleChangeNewData}
                     />
                     <br/><br/>
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                 <Button className="App_button" onClick={handleCloseChangeDialog}>console</Button>
-                <Button className="App_button" onClick={handleCloseChangeDialog}>save</Button>
+                <Button className="App_button" onClick={changeTProduct}>save</Button>
                 </DialogActions>
             </Dialog>
         </Container>

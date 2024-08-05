@@ -19,11 +19,10 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {  createTheme } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import {modeActions} from "../Store/Store"
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
 
 const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
     return (
@@ -53,25 +52,49 @@ const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
       mode: 'dark',
     },
   });
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-
   
 const Basket=()=>{
 
-    const mode = "dark";
-
+  const apiurl = useSelector(state=>state.url);
+  const token = useSelector(state=>state.token);
+  const basket = useSelector(state=>state.basket);
+  const {clearBasket,addProduct,deleteProduct , deleteFullProduct} = modeActions;
+  const dispatch = useDispatch();
     const [delaviryServe, setDelaviryServe] = React.useState(0);
 
     const handleChangeDelaviryServe = (event) => {
       setDelaviryServe(event.target.value);
     };
 
+
+    const changeNumberOfProduct=(product,newQuantity)=>{
+      if(newQuantity > product.quantity)
+        dispatch(addProduct(product))
+      if(newQuantity<product.quantity)
+        dispatch(deleteProduct(product.id))
+      
+    }
+
+    const test =()=>{
+      
+      /*dispatch(addProduct({
+        id:10,
+        name:"test",
+        type_id:1,
+        quantity:1,
+      }))*/
+      //dispatch(deleteFullProduct(1))
+      dispatch(clearBasket())
+      console.log(basket)
+    }
+
+    const Total=()=>{
+      var sum=0;
+      for(var i=0;i<basket.length;i++){
+        sum=sum+(basket[i].salary * basket[i].quantity)
+      }
+      return sum;
+    }
 
     return(
         <Container>
@@ -89,7 +112,7 @@ const Basket=()=>{
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                        {rows.map((row) => (
+                        {basket.map((row,index) => (
                             <TableRow
                             key={row.name}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -97,27 +120,27 @@ const Basket=()=>{
                                 <TableCell
                                   align="center"
                                   > 
-                                    <img src={Img} className='table-c-img' />
+                                    <img src={row.imgURL} className='table-c-img' />
                                 </TableCell>
                                 <TableCell
                                   align="center"
                                   >
-                                    بطاطا  
+                                   {row.name}
                                  </TableCell>
                                 <TableCell 
                                   align="center"
                                   >
-                                    <NumberInput onChange={(e)=>console.log(e)} aria-label="Quantity Input" min={1} max={99} />    
+                                    <NumberInput value={row.quantity}  onChange={(event, newValue) => changeNumberOfProduct(row,newValue)} aria-label="Quantity Input" min={1} max={99} />    
                                 </TableCell>
                                 <TableCell 
                                   align="center"
                                   >
-                                    100$
+                                    {row.salary  } $
                                 </TableCell>
                                 <TableCell 
                                   align="center"
                                  >
-                                    <Button sx={{ color:"#bb252e" }} >
+                                    <Button onClick={()=>dispatch(deleteFullProduct(index))} sx={{ color:"#bb252e" }} >
                                         Delete
                                     </Button>
                                 </TableCell>
@@ -130,13 +153,13 @@ const Basket=()=>{
                 <Col sm={8} md={5} lg={4}>
                     <div className='order-main-div' >
                     <h3 className='main-color t-a-c' >Purchase voucher</h3>
-                    {rows.map((row) => (
+                    {basket.map((row) => (
                         <div className='order-line' >
-                            <span > item-name-1 : </span><span> 20$ </span>
+                            <span > {row.name} <span className='main-color font_larg'>x</span> {row.quantity} : </span><span> {row.salary * row.quantity} $ </span>
                         </div>
                         ))}
                         <h5 className='order-line main-color' >
-                            <span> total : </span><span> 200$ </span>
+                            <span> total : </span><span>  {Total()}$ </span>
                         </h5>
                         <div className='p-10 t-a-c' >
                              <FormControl theme={darkTheme} fullWidth>
@@ -148,14 +171,14 @@ const Basket=()=>{
                                 label="Delivery method"
                                 onChange={handleChangeDelaviryServe}
                                 >
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                  <MenuItem value={10}>Ten</MenuItem>
+                                  <MenuItem value={20}>Twenty</MenuItem>
+                                  <MenuItem value={30}>Thirty</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
                         <h4 className='p-10 t-a-c' >
-                            <button style={{ minWidth:"220px" }} type="button" class="btn btn-primary">Order confirmation</button>
+                            <button onClick={()=>test()} style={{ minWidth:"220px" }} type="button" class="btn btn-primary">Order confirmation</button>
                         </h4>
                     </div>
                 </Col>

@@ -225,4 +225,10 @@
 .numberLove {
   color: var(--main-color);
 }
+.font_larg
+{
+  font-size: 22px;
+  font-family: monospace;
+  font-weight: bold;
+}
 /* End ProductInfo */

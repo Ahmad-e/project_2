@@ -13,17 +13,25 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useParams } from "react-router-dom";
 
-import Loading from '../component/loading'
+import Loading from '../component/loading';
+import axios from "axios";
+import {  useSelector } from 'react-redux';
+
 function valuetext(value) {
     return `${value}°C`;
   }
   
 
 const Search=()=>{
+    const param = useParams();
+    const apiurl = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
 
+    const [loading,setLoading] = React.useState(false);
     const [value, setValue] = React.useState([1, 300]);
-
+    const [data,setData] = React.useState([]);
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
@@ -32,10 +40,46 @@ const Search=()=>{
     const handleChangeType = (event) => {
       setType(event.target.value);
     };
-    
+    const [types, setTypes] = React.useState([]);
+
+    React.useEffect(() => {
+        
+        axios.get(apiurl+"showProducts")
+        .then((response) => {
+            setTypes(response.data.products_types);
+        })
+        .catch((error) => console.log(error));
+
+        //////////
+        setLoading(true);
+        var body={}
+        if(param.name!=="-1")
+            body={name:param.name}
+        if(param.type!=="-1")
+            body={type_id:param.type}
+        try {
+            const response = axios.post(apiurl+'search', body,{
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }
+            ).then((response) => {
+                setData(response.data.products);
+                console.log(response.data);
+                setLoading(false);
+            }).catch((error) => {
+                console.log(error)
+                setLoading(false)
+            });
+        } catch (e) {
+            throw e;
+        }
+    }, []);
+
+
     return(
         <>
-        <Loading />
+        <Loading  loading={loading} />
             <Row style={{ margin:"0px" }} className='justify-content-center'  >
                 <Col style={{ padding: "45px 15px" }} lg={2} md={3} sm={4} xs={12} >
                     <Slider
@@ -48,47 +92,45 @@ const Search=()=>{
                         getAriaValueText={valuetext}
                     />
                     <FormControl sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
+                        <InputLabel id="demo-simple-select-helper-label">type</InputLabel>
                         <Select
-                        labelId="demo-simple-select-helper-label"
-                        id="demo-simple-select-helper"
-                        value={type}
-                        label="Age"
-                        onChange={handleChangeType}
+                            labelId="demo-simple-select-helper-label"
+                            id="demo-simple-select-helper"
+                            value={type}
+                            label="type"
+                            onChange={handleChangeType}
                         >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {
+                            types.map((item)=>{
+                                return(
+                                    <MenuItem onClick={()=>window.location.href = ('/search/-1/'+item.id)} >{item.name}</MenuItem>
+                                )
+                            })
+                        }
                         </Select>
-                        <FormHelperText>With label + helper text</FormHelperText>
+                        <FormHelperText>Choose the product you are looking for according to its type</FormHelperText>
                     </FormControl>
                 </Col>
                 <Col lg={10} md={9} sm={8} xs={12} >
                     <Row style={{ margin:"0px" }} className='justify-content-center' >
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
-                        <Col xl={3} lg={4} md={6} sm={11} xs={11} >
-                            <Card id={1} name="product name" imgURL={img2} disc="long discription from product" salary={10} love={true} />
-                        </Col>
+                        {
+                            data.map((item)=>{
+                                if(item.price>value[0] && item.price<value[1] )
+                                return(
+                                    <Col lg={4} md={6} sm={11} xs={11} >
+                                        <Card 
+                                            id={item.id}
+                                            name={item.name}
+                                            imgURL={item.img_url}
+                                            disc={item.disc}
+                                            salary={item.price} 
+                                            love={true} 
+                                            type_id={item.type_id} />
+                                    </Col>
+                                )
+                            })
+                        }
+                       
                         
                     </Row>
                 </Col>

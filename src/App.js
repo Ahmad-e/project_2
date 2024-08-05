@@ -67,7 +67,7 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="basket" element={<Basket />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="search" element={<Searh />} />
+              <Route path="search/:name/:type" element={<Searh />} />
               <Route path="favorite" element={<Favorite />} />
               <Route path="support" element={<Support />} />
               <Route path="product" element={<ProductInfo />} />
