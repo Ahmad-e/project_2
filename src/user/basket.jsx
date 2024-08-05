@@ -22,7 +22,7 @@ import Select from '@mui/material/Select';
 import {  createTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {modeActions} from "../Store/Store"
-
+import Err401 from '../SVGs/err401'
 
 const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
     return (
@@ -57,6 +57,7 @@ const Basket=()=>{
 
   const apiurl = useSelector(state=>state.url);
   const token = useSelector(state=>state.token);
+  const acc = useSelector(state=>state.account);
   const basket = useSelector(state=>state.basket);
   const {clearBasket,addProduct,deleteProduct , deleteFullProduct} = modeActions;
   const dispatch = useDispatch();
@@ -95,6 +96,14 @@ const Basket=()=>{
       }
       return sum;
     }
+
+    if(acc!=="3")
+      return(
+        <div>
+          <Err401 />
+        </div>
+
+      )
 
     return(
         <Container>
