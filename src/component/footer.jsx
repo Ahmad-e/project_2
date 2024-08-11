@@ -13,13 +13,13 @@ const Footer=()=>{
             </Button>
             <p>We are Social</p>
             <div class="social-icons">
-                <FontAwesomeIcon className="icon" href="https://www.tiktok.com/@wendys" icon={faTiktok}/>
-                <FontAwesomeIcon className="icon" href="https://twitter.com/Wendys" icon={faXTwitter}/>
-                <FontAwesomeIcon className="icon" href="https://www.facebook.com/wendys/" icon={faFacebook}/>
-                <FontAwesomeIcon className="icon" href="https://www.instagram.com/wendys/" icon={faInstagram}/>
-                <FontAwesomeIcon className="icon" href="https://www.twitch.tv/wendys" icon={faTwitch}/>
-                <FontAwesomeIcon className="icon" href="https://www.youtube.com/channel/UCxXHHbiGUO3RziA5kW0m1qw"  icon={faYoutube}/>
-                <FontAwesomeIcon className="icon" href="https://www.linkedin.com/company/wendys-international" icon={faLinkedin}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://www.tiktok.com/@wendys")} icon={faTiktok}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://twitter.com/Wendys")} icon={faXTwitter}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://www.facebook.com/wendys/")} icon={faFacebook}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://www.instagram.com/wendys/")} icon={faInstagram}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://www.twitch.tv/wendys")} icon={faTwitch}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://www.youtube.com/channel/UCxXHHbiGUO3RziA5kW0m1qw")}  icon={faYoutube}/>
+                <FontAwesomeIcon className="icon" onClick={()=>window.location.href = ("https://www.linkedin.com/company/wendys-international")} icon={faLinkedin}/>
             </div>
             <p className="copyright">&copy;2024 - <span>Wendy's</span> All Right Reserved</p>
         </div>

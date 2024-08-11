@@ -4,83 +4,95 @@ import Col from 'react-bootstrap/Col';
 import Img from '../images/home.jpg';
 import Card from '../component/card';
 import Carousel from 'react-bootstrap/Carousel';
+import {useState,useEffect} from 'react';
+import { useSelector } from 'react-redux';
+import Err500 from '../SVGs/err500';
+import axios from "axios";
+
 
 
 const Home=()=>{
+
+
+
+    const [product,setProduct]=useState([]);
+    const [types,setTypes]=useState([]);
+    const [ads,setAds]=useState([]);
+    const [errServer,setErrServver] = useState(false);
+    const url = useSelector(state=>state.url);
+    useEffect(() => {
+        axios.get( url+"home",
+            {
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                setAds(response.data.ads);
+                setProduct(response.data.best_products);
+                setTypes(response.data.products_types);
+            })
+            .catch((error) => {
+                setErrServver(true);
+                console.log(error);
+            });
+        }, []);
+
+
+    if(errServer)
+        return(
+            <div>
+                <Err500/>
+                <p>
+                    There was a problem with the servers , You can try later
+                </p>
+            </div>
+        )
     return(
         <>
          <Carousel>
-            <Carousel.Item interval={60000}>
-                <img className='carousel-img' src={Img} text="First slide" />
-                <Carousel.Caption>
-                    <div className='home-image' >
-
-                    <h1 className='home-text-main main-color'>
-                        We’re keeping it fresh around here.
-                    </h1>
-                    <div className='home-text-main' style={{ color : "#222" }}>
-                    We’ve got an entire lineup of classic burgers. Our nuggs have become nothing short of legendary and there are so many other fan faves throughout our menu. But if you’re looking for a detour on your order, give our latest creations and flavor combinations a look-see.
-                    </div>
-                    <button type="button" class="btn btn-primary home-button-main"> GET STARTED </button>
-                    </div>
-                </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item interval={60000}>
-                <img src={Img} className='carousel-img' text="Second slide" />
-                <Carousel.Caption>
-                    <div className='home-image' >
-
-                    <h1 className='home-text-main main-color'>
-                        We’re keeping it fresh around here.
-                    </h1>
-                    <div className='home-text-main' style={{ color : "#222" }}>
-                        We’ve got an entire lineup of classic burgers. Our nuggs have become nothing short of legendary and there are so many other fan faves throughout our menu. But if you’re looking for a detour on your order, give our latest creations and flavor combinations a look-see.
-                    </div>
-                    <button type="button" class="btn btn-primary home-button-main"> GET STARTED </button>
-                    </div>
-                </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-                <img src={Img} className='carousel-img' text="Third slide" />
-                <Carousel.Caption>
-                    <div className='home-image' >
-
-                    <h1 className='home-text-main main-color'>
-                        We’re keeping it fresh around here.
-                    </h1>
-                    <div className='home-text-main' style={{ color : "#222" }}>
-                        We’ve got an entire lineup of classic burgers. Our nuggs have become nothing short of legendary and there are so many other fan faves throughout our menu. But if you’re looking for a detour on your order, give our latest creations and flavor combinations a look-see.
-                    </div>
-                    <button type="button" class="btn btn-primary home-button-main"> GET STARTED </button>
-                    </div>
-                </Carousel.Caption>
-            </Carousel.Item>
+            {
+                ads.map((item)=>{
+                    return(
+                        <Carousel.Item interval={60000}>
+                            <img className='carousel-img' src={item.img_url} text="First slide" />
+                            <Carousel.Caption>
+                                <div className='home-image' >
+                                <div className='home-text-main' style={{ color : "#222" }}>
+                                    {item.disc}
+                                </div>
+                                <button onClick={()=>document.location.assign(item.link)} type="button" class="btn btn-primary home-button-main"> GET STARTED </button>
+                                </div>
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                    )
+                })
+            }
         </Carousel>
 
-        {/*<div className='home-image' style={{ backgroundImage:`url(${Img})` }} >
-
-            <h1 className='home-text-main main-color'>
-                We’re keeping it fresh around here.
-            </h1>
-            <div className='home-text-main' style={{ color : "#222" }}>
-            We’ve got an entire lineup of classic burgers. Our nuggs have become nothing short of legendary and there are so many other fan faves throughout our menu. But if you’re looking for a detour on your order, give our latest creations and flavor combinations a look-see.
-            </div>
-            <button type="button" class="btn btn-primary home-button-main"> GET STARTED </button>
-        </div>*/}
         <Container>
             
             <Row className='justify-content-center' >
-                <Col>
-                <Card id={1} name="product name" imgURL={Img} disc="long discription from product" salary={10} love={true} />
-                </Col>
-                <Col>
-                <Card id={1} name="product name" imgURL={Img} disc="long discription from product" salary={10} love={true} />
-                </Col>
-                <Col>
-                <Card id={1} name="product name" imgURL={Img} disc="long discription from product" salary={10} love={true} />
-                </Col>
+                {
+                    product.map((item)=>{
+                        return(
+                            <Col lg={3} md={4} sm={6} xs={12}>
+                                <Card 
+                                            id={item.id}
+                                            name={item.name}
+                                            imgURL={item.img_url}
+                                            disc={item.disc}
+                                            salary={item.price} 
+                                            love={true} 
+                                            type_id={item.type_id} />
+                            </Col>
+                        )
+                    })
+                }
+
             </Row>
-            
         </Container>
         </>
     )

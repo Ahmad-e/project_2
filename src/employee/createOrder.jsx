@@ -1,3 +1,4 @@
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -22,7 +23,7 @@ import Select from '@mui/material/Select';
 import {  createTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {modeActions} from "../Store/Store"
-import Err401 from '../SVGs/err401'
+import axios from "axios";
 
 const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
     return (
@@ -53,7 +54,7 @@ const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
     },
   });
   
-const Basket=()=>{
+const CreateOrder=()=>{
 
   const apiurl = useSelector(state=>state.url);
   const token = useSelector(state=>state.token);
@@ -62,9 +63,29 @@ const Basket=()=>{
   const {clearBasket,addProduct,deleteProduct , deleteFullProduct} = modeActions;
   const dispatch = useDispatch();
     const [delaviryServe, setDelaviryServe] = React.useState(0);
+    const [products,setproducts] = React.useState([]);
+
+    React.useEffect(() => {
+        //setLoading(true);
+        axios.get(apiurl+"showProducts")
+            .then((response) => {
+                setproducts(response.data.products)
+                console.log(response.data.products)
+            })
+            .catch((error) => console.log(error));
+    }, []);
+
 
     const handleChangeDelaviryServe = (event) => {
-      setDelaviryServe(event.target.value);
+
+      dispatch(addProduct(
+        {
+            id:event.target.value.id,
+            name:event.target.value.name,
+            imgURL:event.target.value.img_url,
+            salary:parseInt(event.target.value.price) ,
+            quantity:1,
+        }))
     };
 
 
@@ -76,10 +97,7 @@ const Basket=()=>{
       
     }
 
-    const add_req =()=>{
-      
-      console.log(basket)
-    }
+
 
     const Total=()=>{
       var sum=0;
@@ -89,18 +107,40 @@ const Basket=()=>{
       return sum;
     }
 
-    if(acc!=="3")
-      return(
-        <div>
-          <Err401 />
-        </div>
-
-      )
 
     return(
         <Container>
-            <Row className='pt_50 justify-content-center'>
-                <Col sm={12} md={7} lg={8}>
+            <Row className=' product_table pt_50 justify-content-center'>
+                <Col>
+                    <FormControl theme={darkTheme} fullWidth>
+                        <InputLabel id="demo-simple-select-label">selecte product</InputLabel>
+                        <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={delaviryServe}
+                        label="selecte product"
+                        onChange={handleChangeDelaviryServe}
+                            >
+                            {
+                                products.map((item)=>{
+                                    return(
+                                        <MenuItem value={item}>{item.name}</MenuItem>
+                                    )
+                                })
+                            }
+                        </Select>
+                    </FormControl>
+                </Col>
+                <Col>
+                
+                </Col>
+                <Col>
+                
+                </Col>
+
+            </Row>
+            <Row className=' product_table pt_50 justify-content-center'>
+                <Col  sm={12} lg={12}>
                 <TableContainer sx={{ borderRadius:"12px" }}  component={Paper}>
                     <Table sx={{ minWidth: 520 , color:"#fff" }} aria-label="simple table">
                         <TableHead>
@@ -147,47 +187,28 @@ const Basket=()=>{
                                 </TableCell>
                             </TableRow>
                         ))}
+                        <TableRow>
+                            <TableCell align="center"><Button onClick={()=>dispatch(clearBasket())}  color="error" variant="outlined"> clear  </Button></TableCell>
+                            <TableCell></TableCell><TableCell></TableCell>
+                            <TableCell align="center" >
+                            <p className=' main-color'>toale :  {Total()} $ </p>  
+                            </TableCell>
+                            <TableCell align="center">
+                            <Button onClick={()=>console.log(basket)} color="error" variant="outlined"> add order  </Button>
+
+                            </TableCell>
+
+                        </TableRow>
                         </TableBody>
                     </Table>
                     </TableContainer>
                 </Col>
-                <Col sm={8} md={5} lg={4}>
-                    <div className='order-main-div' >
-                    <h3 className='main-color t-a-c' >Purchase voucher</h3>
-                    {basket.map((row) => (
-                        <div className='order-line' >
-                            <span > {row.name} <span className='main-color font_larg'>x</span> {row.quantity} : </span><span> {row.salary * row.quantity} $ </span>
-                        </div>
-                        ))}
-                        <h5 className='order-line main-color' >
-                            <span> total : </span><span>  {Total()}$ </span>
-                        </h5>
-                        <div className='p-10 t-a-c' >
-                             <FormControl theme={darkTheme} fullWidth>
-                                <InputLabel id="demo-simple-select-label">Delivery method</InputLabel>
-                                <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={delaviryServe}
-                                label="Delivery method"
-                                onChange={handleChangeDelaviryServe}
-                                >
-                                  <MenuItem value={10}>Ten</MenuItem>
-                                  <MenuItem value={20}>Twenty</MenuItem>
-                                  <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
-                        <h4 className='p-10 t-a-c' >
-                            <button onClick={()=>add_req()} style={{ minWidth:"220px" }} type="button" class="btn btn-primary">Order confirmation</button>
-                        </h4>
-                    </div>
-                </Col>
+                
             </Row>
         </Container>
     )
 }
-export default Basket
+export default CreateOrder
 
 
 const blue = {

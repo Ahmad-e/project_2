@@ -79,6 +79,7 @@ export default function Login() {
 
   return (
     <div >
+      <Loading  loading={loading} />
           <Alert sx={errServer==="" ?   { display:"none" } : {}} variant='filled' severity="error">{errServer}</Alert>
       <form className='form_auth' onSubmit={handleSubmit}>
         <div className="register-container">
@@ -121,7 +122,7 @@ export default function Login() {
         <br /> 
 
       </form>
-      <Loading  loading={loading} />
+      
     </div>
 
   );

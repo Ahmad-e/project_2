@@ -5,20 +5,76 @@ import TextField from '@mui/material/TextField';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import Err500 from '../SVGs/err500';
+import Err401 from '../SVGs/err401';
+import Loading from '../component/loading';
+
+import { useSelector } from 'react-redux';
+import axios from "axios";
 
 const Support =()=>{
-
+    const url = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+    const acc = useSelector(state=>state.account);
+    const [errServer,setErrServver] = useState(false);
     const [Message, setMessage] = useState('');
-
+    const [sended, setSended] = useState(true);
+    const [loading,setLoading] = React.useState(false);
     const handleSubmit = (e) => {
       e.preventDefault();
 
       console.log('Message:', Message);
+
+      try {
+        setLoading(true)
+        const response = axios.post(url+'sendMsg', 
+        {
+            question:Message
+        },{
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' +token 
+            }
+        }
+        ).then((response) => {
+            console.log(response.data);
+            setSended(false);
+            setMessage("")
+            setLoading(false)
+        }).catch((error) => {
+            setErrServver(true);
+            setLoading(false)
+            console.log(error);
+        });
+        } catch (e) {
+            throw e;
+        }
     }
+
+    if(errServer)
+        return(
+            <div>
+                <Err500/>
+                <p>
+                    There was a problem with the servers , You can try later
+                </p>
+            </div>
+        )
+
+        if(acc!=="3")
+            return(
+                <div>
+                    <Err401/>
+                    <p>You cannot access this page. You must log in as an admin , go to <a href='/login'>Login</a></p>
+                </div>
+            )
     
     
     return(
         <div className="support-container">
+            <Loading  loading={loading} />
             <section className="support-row">
                 <div className="wrapper">
                     <Container className="contact-wrap">
@@ -45,14 +101,18 @@ const Support =()=>{
                                                     />
                                             <br /><br />
                                         <div>
-                                                <input type="submit" defaultValue="Send Message" className=" btn btn-primary" />
-                                                <div className="submitting" />
-                                                <br />
+                                            <input type="submit" defaultValue="Send Message" className=" btn btn-primary" />
+                                            <div className="submitting" />
+                                            <br />
                                         </div>
                                     </div>
                                 </form>
                             </Col>
                         </Row>
+                        <Stack >
+                            <Alert hidden={sended}  variant="outlined" severity="success">Sent successfully , You will be answered as quickly as possible. Just monitor your <a href='/profile' >profile page</a></Alert>
+                            
+                        </Stack>
                     </Container>
                     
                 </div>

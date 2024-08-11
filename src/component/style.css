@@ -68,7 +68,7 @@
 .footer {
     background-image: linear-gradient(140deg, #bb252f3b 0%, #a9454520 50%, #a42d3549 75%);
     padding-top: calc( var(--section-padding) / 2);
-    margin-top: 200px;
+    margin-top: 50px;
     padding-bottom: calc( var(--section-padding) / 2);
     background-size: cover;
     text-align: center;

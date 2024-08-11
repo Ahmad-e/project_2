@@ -171,6 +171,18 @@ export default function Header() {
               all products
         </Button>
       </MenuItem>
+      <MenuItem>
+        <Button
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={()=>document.location.assign("/employee/support")}
+              sx={account==="2" ?  {color:"#bb252e" , padding: "0px 20px"} : {display: "none"} }
+            >
+              User inquiries
+        </Button>
+      </MenuItem>
       <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} } onClick={()=>document.location.assign("/login")} >
           <Button
               aria-haspopup="true"
@@ -201,7 +213,7 @@ export default function Header() {
         sx={mode==="dark" ? ({}) :({ backgroundColor: "#fffdfd" , color : "#222" })  }>
         <Toolbar>
           <Button
-          href='/'
+          href= { account==="1"? "/admin/home" :(account==="2"? "/employee/home" : '/') } 
             sx={{ color:"#bb252e" , borderRadius:"50px" ,    margin: "10px 40px 10px 30px" }}>
             <Logo  />
           </Button>
@@ -223,6 +235,13 @@ export default function Header() {
             </Button>
             <Button
                 aria-haspopup="true"
+                sx={account ==="3" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
+                href='/orders'
+              >
+                my orders
+            </Button>
+            <Button
+                aria-haspopup="true"
                 sx={{ color:"#bb252e" ,padding: "0px 20px"  }}
                 href='/search/-1/-1'
               >
@@ -238,6 +257,13 @@ export default function Header() {
               
             >
               all products
+            </Button>
+            <Button
+                aria-haspopup="true"
+                sx={account ==="2" ?  { color:"#bb252e" ,padding: "0px 20px"  } : {display: "none"}}
+                onClick={()=>document.location.assign("/employee/support")}
+              >
+                User inquiries
             </Button>
             <Menu
               

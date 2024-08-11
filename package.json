@@ -25,9 +25,11 @@
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
+    "jquery": "^3.6.0",
     "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
     "luxon": "^3.4.4",
+    "owl.carousel": "^2.3.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-bootstrap-daterangepicker": "^8.0.0",
@@ -37,6 +39,7 @@
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.8",
+    "swiper": "^11.1.9",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

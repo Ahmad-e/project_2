@@ -17,7 +17,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from '@mui/material/Button';
-
+import CreateOrder from './createOrder'
 
 
 function createData(name, calories, fat, carbs, protein, price) {
@@ -137,6 +137,7 @@ const rows = [
 export default function EmployeeHome() {
   return (
     <Container className='pt_50'>
+        <CreateOrder/>
         <TableContainer component={Paper}>
         <Table  aria-label="collapsible table">
             <TableHead>

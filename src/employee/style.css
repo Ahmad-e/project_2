@@ -19,3 +19,10 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
+  /* start create style */
+  .product_table
+  {
+    padding: 30px;
+  }
+    /* end create style */

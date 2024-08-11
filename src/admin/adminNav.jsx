@@ -7,9 +7,20 @@ import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import WebOutlinedIcon from '@mui/icons-material/WebOutlined';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import { useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {modeActions} from "../Store/Store";
 
 const AdminNav=()=>{
     const currentURL = useLocation().pathname;
+
+    const dispatch = useDispatch();
+    const {setToken,setAcc} = modeActions;
+
+    const logOut=()=>{
+        dispatch(setAcc(null))
+        dispatch(setToken(null))
+    }
+
     return(
         <div className='Admin_navbar'>
             <h5 className='disable_in_mobile' style={{ padding:"20px" }} >
@@ -39,6 +50,9 @@ const AdminNav=()=>{
 
             <Nav.Link className={ currentURL==="/admin/ads" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/admin/ads">
                 <WebOutlinedIcon/><span className='disable_in_mobile'>ads</span>  
+            </Nav.Link>
+            <Nav.Link onClick={()=>logOut()} className="Admin_nav_link" >
+                <span  className='disable_in_mobile'>log out</span>  
             </Nav.Link>
         </div>
     )

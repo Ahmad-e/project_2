@@ -3,9 +3,9 @@ import * as React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from '../component/card';
-import img1 from '../images/home.jpg';
-import img2 from '../images/home2.jpg';
 
+import Err500 from '../SVGs/err500';
+import Err404 from '../SVGs/err404';
 
 import Slider from '@mui/material/Slider';
 import InputLabel from '@mui/material/InputLabel';
@@ -28,10 +28,11 @@ const Search=()=>{
     const param = useParams();
     const apiurl = useSelector(state=>state.url);
     const token = useSelector(state=>state.token);
-
+    const [errServer,setErrServver] = React.useState(false);
     const [loading,setLoading] = React.useState(false);
     const [value, setValue] = React.useState([1, 300]);
     const [data,setData] = React.useState([]);
+    const [err404,seterr404] = React.useState(false);
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
@@ -48,7 +49,7 @@ const Search=()=>{
         .then((response) => {
             setTypes(response.data.products_types);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => setErrServver(true));
 
         //////////
         setLoading(true);
@@ -67,8 +68,11 @@ const Search=()=>{
                 setData(response.data.products);
                 console.log(response.data);
                 setLoading(false);
+                if(response.data.products.length===0)
+                    seterr404(true)
             }).catch((error) => {
                 console.log(error)
+                setErrServver(true);
                 setLoading(false)
             });
         } catch (e) {
@@ -76,6 +80,24 @@ const Search=()=>{
         }
     }, []);
 
+
+    if(errServer)
+        return(
+            <div>
+                <Err500/>
+                <p>
+                    There was a problem with the servers , You can try later
+                </p>
+            </div>
+        )
+
+    if(err404)
+        return(
+            <div>
+                <Err404/>
+                <p>There are no products with that name. Try searching for another product</p>
+            </div>
+        )
 
     return(
         <>

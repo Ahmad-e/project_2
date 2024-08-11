@@ -1,9 +1,17 @@
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+
 import AdminNave from './adminNav'
 import {Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Err401 from '../SVGs/err401'
 const AdminApp=()=>{
+    const acc = useSelector(state=>state.account);
+    if(acc!=="1")
+        return(
+            <div>
+                <Err401/>
+                <p>You cannot access this page. You must log in as an admin , go to <a href='/login'>Login</a></p>
+            </div>
+        )
     return(
         <div className='admin_app'>
             <div className='admin_header' lg={3} md={2} xm={2} >

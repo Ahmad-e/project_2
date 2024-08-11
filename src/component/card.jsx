@@ -1,21 +1,42 @@
 import { faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {modeActions} from "../Store/Store"
+
+import {modeActions} from "../Store/Store";
+import {useState,useEffect} from 'react';
+import axios from "axios";
 
 
 function Card(param) {
     
-    const [isLove,setIsLove] =  useState(false);
+    const [isLove,setIsLove] =  useState(param.love);
     const [isAdded,setIsAdded] =  useState(false);
 
     const {addProduct} = modeActions;
+    const url = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+
     const dispatch = useDispatch();
 
+    const tuggleFavorite = () =>{
+        axios.get( url+"toggleFavourite/"+param.id,
+            {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization' : 'Bearer ' +token 
+                }
+            }
+        ).then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+    }
+
     return (
-        <div className='productCard my-5 text-center mx-5 rounded'>
+        <div className='productCard text-center  rounded'>
             <div className='image position-relative'>
                 <img className='d-block position-absolute' width={"100%"} height={"100%"} src={param.imgURL} alt="img" />
             </div>
@@ -51,7 +72,7 @@ function Card(param) {
                         style={{
                             color: isLove ? "#b0171f" : "",
                         }}
-                        onClick={()=>setIsLove(prev => !prev)} icon={faHeart}/>
+                        onClick={()=>{tuggleFavorite(); setIsLove(prev => !prev)}} icon={faHeart}/>
                         <p className='pLove'>{isLove ? "Loved" : "Love"}</p>
                     </div>
                 </div>
