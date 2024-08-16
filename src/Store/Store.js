@@ -46,6 +46,8 @@ const modeSlice = createSlice({
                 window.location.href = '/admin/home';
             else if(value.payload===2)
                 window.location.href = '/employee/home';
+            else if(value.payload===4)
+                window.location.href = '/delivary/home';
             else if(value.payload===3)
                 window.location.href = '/profile';
             else

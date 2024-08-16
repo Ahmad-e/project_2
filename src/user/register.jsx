@@ -38,7 +38,7 @@ export default function Register() {
     setGender(newAlignment);
   };
 
-  const [file, setFile] = useState({});
+  const [file, setFile] = useState(null);
   const handleChangeFile=(e)=>{
     if (e.target.files) {
       setFile(e.target.files[0]);
@@ -104,7 +104,8 @@ export default function Register() {
             form.append('phone_no', phoneNumber);
             form.append('birth_date', date);
             form.append('password', password);
-            form.append('img_url', file);
+            if(file!==null)
+              form.append('img_url', file);
 
 
             try {
@@ -226,7 +227,7 @@ export default function Register() {
         <div >
           <div style={{ color : "black" }}>
           <PhoneInput
-            country={'th'}
+            country={'sy'}
             value={phoneNumber}
             onChange={(e)=>setPhoneNumber(e)}
             />

@@ -1,6 +1,6 @@
 
 
-import React, {useState} from 'react';
+import React, {useState , useEffect} from 'react';
 //import './auth.css';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -23,11 +23,25 @@ import Alert from '@mui/material/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import {modeActions} from "../Store/Store"
 
+
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
 export default function Employees() {
   const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState('');
   const [roleId, setRoleId] = useState(0);
-  const [sectionId, setSectionId] = useState(0);
+  const [sectionId, setSectionId] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [date, setDate] = useState("");
@@ -36,10 +50,13 @@ export default function Employees() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errors, setErrors] = useState({});
   const [errServer, setErrServer] = useState('');
-
+  const apiurl = useSelector(state=>state.url);
+  const token = useSelector(state=>state.token);
   const dispatch = useDispatch();
   const {setToken,setAcc} = modeActions;
 
+
+  const [openDialog,setOpenDealog] = useState(false);
 
   const handleChangeGender = (event, newAlignment) => {
     setGender(newAlignment);
@@ -48,19 +65,28 @@ export default function Employees() {
     setRoleId(newAlignment);
   };
   const handleChangesection = (event, newAlignment) => {
-    setSectionId(newAlignment);
+    setSectionId(event.target.value);
   };
-  const [file, setFile] = useState({});
+  const [file, setFile] = useState(null);
   const handleChangeFile=(e)=>{
     if (e.target.files) {
       setFile(e.target.files[0]);
-      console.log(file);
+      
     }
   }
+  const [sectors,setSectors] = useState([])
+  useEffect(() => {
+    axios.get(apiurl+"showSectors")
+        .then((response) => {
+            setSectors(response.data.sectors);
+            console.log(response.data.sectors);
+        })
+        .catch((error) => console.log(error));
+}, []);
 
 
 
-
+  const[userData , setUserData] = useState({});
   const handleSubmit = () => {
     
     // Clear previous errors
@@ -113,7 +139,7 @@ export default function Employees() {
     
 
 
-
+console.log(sectionId)
     if(!newErrors.password && !newErrors.email && !newErrors.fullName && !newErrors.date && !newErrors.gender && !newErrors.phoneNumber)
     {
         var form = new FormData();
@@ -124,24 +150,32 @@ export default function Employees() {
             form.append('phone_no', phoneNumber);
             form.append('birth_date', date);
             form.append('password', password);
-            form.append('img_url', file);
+
+            form.append('role_id', roleId);
+            if(roleId===2)
+            form.append('sector_id', sectionId);
+            if(file!==null)
+              form.append('img_url', file);
 
 
             try {
                 setLoading(true);
-                const response = axios.post('http://127.0.0.1:8000/api/register',
+                const response = axios.post(apiurl+'createEmpAccount',
                     form,
                     {
                         headers: {
                             'Content-Type': 'multipart/form-data',
+                            'Authorization' : 'Bearer ' +token ,
                             'Accept':"application/json"
                         }
                     })
                     .then((response) => {
                         if(response.data.status)
                         {
-                            dispatch(setToken(response.data.access_token));
-                            dispatch(setAcc(response.data.user_data.role_id));
+                            //dispatch(setToken(response.data.access_token));
+                            //dispatch(setAcc(response.data.user_data.role_id));
+                            setOpenDealog(true);
+                            setUserData(response.data.user_data)
                             console.log(response.data);
                         }
                         else
@@ -255,7 +289,7 @@ export default function Employees() {
             aria-label="Platform"
           >
             <ToggleButton value={2}>section employee </ToggleButton>
-            <ToggleButton value={3}>delivary employee</ToggleButton>
+            <ToggleButton value={4}>delivary employee</ToggleButton>
           </ToggleButtonGroup>
         </FormControl>
 
@@ -271,9 +305,14 @@ export default function Employees() {
                     label="branch"
                     onChange={handleChangesection}
                 >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                  {
+                      sectors.map((item)=>{
+                        return(
+                          <MenuItem value={item.id}>{item.city_name}</MenuItem>
+                        )
+                      })
+                    }
+
                 </Select>
         </FormControl>
         {errors.roleId && <p className="error-message">{errors.roleId}</p>}
@@ -282,7 +321,7 @@ export default function Employees() {
                     >
           <div style={{ color : "black"}}>
           <PhoneInput
-            country={'th'}
+            country={'sy'}
             value={phoneNumber}
             onChange={(e)=>setPhoneNumber(e)}
             />
@@ -295,6 +334,27 @@ export default function Employees() {
         <button onClick={()=>handleSubmit()}  className='btn btn-primary'> Sign up </button>
     </div>
     </Box>
+            <Dialog
+                open={openDialog}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={()=>setOpenDealog(false)}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle> Created successfully  </DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                    employee data<br/>
+                    name :{userData.name}<br/>
+                    email : {userData.email}<br/>
+                    password : {password}<br/>
+                    phone number : {userData.phone_no}<br/>
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button className="App_button" sx={{ color:"#bb252e" }} onClick={()=>setOpenDealog(false)}>close</Button>
+                </DialogActions>
+            </Dialog>
     </>
   )
 }

@@ -20,33 +20,69 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from '@mui/material/Button';
 
+import Err401 from '../SVGs/err401'
+import Err500 from '../SVGs/err500';
+import Loading from '../component/loading';
+import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux';
 
 
-function createData(name, calories, fat, carbs, protein, price) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: 'بطاطا',
-        customerId: '11091700',
-        amount: 3,
-      },
-      {
-        date: 'بطاطا',
-        customerId: 'Anonymous',
-        amount: 1,
-      },
-    ],
-  };
+
+
+
+
+
+
+
+export default function UserOrder() {
+
+  const apiurl = useSelector(state=>state.url);
+  const token = useSelector(state=>state.token);
+  const acc = useSelector(state=>state.account);
+  const [errServer,setErrServver] = React.useState(false);
+  const [data,setData] = React.useState([]);
+  React.useEffect(() => {
+    axios.get( apiurl+"showUserOrders",
+        {
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' +token 
+            }
+        }
+    )
+        .then((response) => {
+            setData(response.data.orders)
+            console.log(response.data);
+
+        })
+        .catch((error) => {
+            console.log(error)
+            setErrServver(true);
+        });
+}, []);
+
+const consoleOrder=(id)=>{
+    axios.get( apiurl+"cancelOrder/"+id,
+          {
+              headers:{
+                  'Content-Type': 'application/json',
+                  'Authorization' : 'Bearer ' +token 
+              }
+          }
+      )
+          .then((response) => {
+              setData(response.data.orders)
+              console.log(response.data);
+
+          })
+          .catch((error) => {
+              console.log(error)
+              setErrServver(true);
+          });
 }
 
 function TRow(props) {
-  const { row } = props;
+  var row = props.row
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -61,40 +97,41 @@ function TRow(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="center" component="th" scope="row">
-          {row.name}
-        </TableCell>
-        <TableCell align="center">{row.calories}</TableCell>
-        <TableCell align="center">{row.fat}</TableCell>
-        <TableCell align="center">{row.carbs}</TableCell>
-        <TableCell align="center"><Button size="small" color="error" variant="outlined">concol </Button></TableCell>
+
+        <TableCell align="center">{row.status_name}</TableCell>
+        <TableCell align="center">{row.delivery_price} $</TableCell>
+        <TableCell align="center">{row.total_price - row.delivery_price} $</TableCell>
+        <TableCell align="center">{row.products.length}</TableCell>
+        <TableCell align="center">{row.total_price}  $</TableCell>
+        <TableCell align="center"><Button onClick={()=>consoleOrder(row.order_id)} hidden={row.status_id!==1} size="small" color="error" variant="outlined">concole </Button></TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
+            <Box sx={{ margin: 1, maxWidth:"600px" }}>
               <Typography variant="h6" gutterBottom component="div">
-                Request data
+                Order  data
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
+                    
                     <TableCell align="center" >name of product</TableCell>
-                    <TableCell align="center" > id </TableCell>
+                    <TableCell align="center" > price </TableCell>
                     <TableCell align="center"> quantity </TableCell>
                     <TableCell align="center">Total price ($)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
+                  {row.products.map((historyRow) => (
                     <TableRow key={historyRow.date}>
                       <TableCell align="center" component="th" scope="row">
-                        {historyRow.date}
+                        {historyRow.name}
                       </TableCell>
-                      <TableCell align="center" >{historyRow.customerId}</TableCell>
-                      <TableCell align="center">{historyRow.amount}</TableCell>
+                      <TableCell align="center" >{historyRow.price}</TableCell>
+                      <TableCell align="center">{historyRow.quantity}</TableCell>
                       <TableCell align="center">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                        {historyRow.price * historyRow.quantity}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -108,50 +145,44 @@ function TRow(props) {
   );
 }
 
-Row.propTypes = {
-  row: PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbs: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    history: PropTypes.arrayOf(
-      PropTypes.shape({
-        amount: PropTypes.number.isRequired,
-        customerId: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
-      }),
-    ).isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    protein: PropTypes.number.isRequired,
-  }).isRequired,
-};
+  
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
+if(errServer)
+  return(
+      <div>
+          <Err500/>
+          <p>
+              There was a problem with the servers , You can try later
+          </p>
+      </div>
+  )
 
-export default function UserOrder() {
+  if(acc!=="3")
+      return(
+          <div>
+              <Err401/>
+              <p>You cannot access this page. You must log in as an admin , go to <a href='/login'>Login</a></p>
+          </div>
+      )
+
   return (
     <Container className='pt_50'>
         <TableContainer component={Paper}>
         <Table  aria-label="collapsible table">
             <TableHead>
                 <TableRow>
-                    <TableCell />
-                    <TableCell align="center" > date </TableCell>
-                    <TableCell align="center"> total </TableCell>
-                    <TableCell align="center"> delivary state </TableCell>
+                    <TableCell />  
                     <TableCell align="center"> state of order </TableCell>
+                    <TableCell align="center"> delivery price </TableCell>
+                    <TableCell align="center"> product total </TableCell>
+                    <TableCell align="center"> product quantity </TableCell>
+                    <TableCell align="center"> order total </TableCell>
                     <TableCell align="center"> cancel </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-            {rows.map((row) => (
-                <TRow key={row.name} row={row} />
+            {data.map((row) => (
+                <TRow key={row.order_id} row={row} />
             ))}
             </TableBody>
         </Table>

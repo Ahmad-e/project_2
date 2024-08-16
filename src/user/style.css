@@ -29,6 +29,8 @@
 }
 .home-text-main
 {
+  font-size: 22px;
+  font-weight: bold;
   width: 50%;
 }
 .carousel-item,

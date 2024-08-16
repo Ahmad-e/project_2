@@ -32,7 +32,7 @@ export default function Header() {
   const account = useSelector(state=>state.account);
   const basket = useSelector(state=>state.basket);
   const dispatch = useDispatch();
-  const {toggleMode} = modeActions;
+  const {toggleMode,setToken,setAcc} = modeActions;
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -47,6 +47,10 @@ export default function Header() {
         });
 }, []);
 
+  const LogOut=()=>{
+    dispatch(setAcc(null))
+    dispatch(setToken(null))
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -183,19 +187,27 @@ export default function Header() {
               User inquiries
         </Button>
       </MenuItem>
-      <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} } onClick={()=>document.location.assign("/login")} >
+      <MenuItem sx={account==="4"  ? {} : {} } onClick={()=>LogOut()} >
           <Button
               aria-haspopup="true"
-              sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
+              sx={account==="4" ? {color:"#bb252e" ,padding: "0px 20px"} : { display: "none" } }
+            >
+              log out
+          </Button>
+      </MenuItem>
+      <MenuItem sx={account==="1" || account==="2"|| account==="3"|| account==="4" ? {display: "none"} : {} } onClick={()=>document.location.assign("/login")} >
+          <Button
+              aria-haspopup="true"
+              sx={account==="1" || account==="2"|| account==="3"|| account==="4" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
             >
               login
           </Button>
       </MenuItem>
-      <MenuItem sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : {} }>
+      <MenuItem sx={account==="1" || account==="2"|| account==="3"|| account==="4" ? {display: "none"} : {} }>
         <button 
               onClick={()=>document.location.assign("/register")} 
               type="button" 
-              className={account==="1" || account==="2"|| account==="3" ?  "d_n" : " btn btn-primary"}>
+              className={account==="1" || account==="2"|| account==="3"|| account==="4" ?  "d_n" : " btn btn-primary"}>
                 SIGN UP
         </button>
       </MenuItem>
@@ -213,7 +225,7 @@ export default function Header() {
         sx={mode==="dark" ? ({}) :({ backgroundColor: "#fffdfd" , color : "#222" })  }>
         <Toolbar>
           <Button
-          href= { account==="1"? "/admin/home" :(account==="2"? "/employee/home" : '/') } 
+          href= { account==="1"? "/admin/home" :(account==="2"? "/employee/home" : (account==="4"? "/delivary/home" : "/") ) } 
             sx={{ color:"#bb252e" , borderRadius:"50px" ,    margin: "10px 40px 10px 30px" }}>
             <Logo  />
           </Button>
@@ -288,16 +300,23 @@ export default function Header() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
           <Button
+              onClick={()=>LogOut()}
+              aria-haspopup="true"
+              sx={account==="4" ? {color:"#bb252e" ,padding: "0px 20px"} : { display: "none" }  }
+            >
+              log out
+          </Button>
+          <Button
               href='/login'
               aria-haspopup="true"
-              sx={account==="1" || account==="2"|| account==="3" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
+              sx={account==="1" || account==="2"|| account==="3"|| account==="4" ? {display: "none"} : { color:"#bb252e" ,padding: "0px 20px"  } }
             >
               login
           </Button>
             <button 
               onClick={()=>document.location.assign("/register")} 
               type="button" 
-              className={account==="1" || account==="2"|| account==="3" ?  "d_n" : " btn btn-primary"}>
+              className={account==="1" || account==="2"|| account==="3"|| account==="4" ?  "d_n" : " btn btn-primary"}>
                 SIGN UP
             </button>
           <IconButton

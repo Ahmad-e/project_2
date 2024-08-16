@@ -29,35 +29,30 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
-//import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../component/loading';
+import axios from "axios";
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-  
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-
 const Branches=()=>{
-
+    const apiurl = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+    const url = useSelector(state=>state.url);
     const [lat, setLat] = React.useState(0);
     const [Ling, setLing] = React.useState(0);
-
+    const [loading,setLoading] = React.useState(false);
     //const [errLat, setErrLat] = React.useState(0);
     //const [errLing, setErrLing] = React.useState(0);
 
 
-    const [city, setCity] = React.useState(0);
+    const [city, setCity] = React.useState({});
     const [openChangeDialog, setOpenChangeDialog] = React.useState(false);
+
+
 
 
     const handleChangeLat = (event) => {
@@ -72,18 +67,120 @@ const Branches=()=>{
         setCity(event.target.value);
     };
 
-    const handleClickOpenChangeDialog = () => {
+
+    const [sectorIdToChange, setSectorIdToChange] = React.useState(0);
+    const [changelat, setchangeLat] = React.useState(0);
+    const [changeLing, setchangeLing] = React.useState(0);
+    const [changecity, setchangeCity] = React.useState(0);
+
+    const handleClickOpenChangeDialog = (data) => {
         setOpenChangeDialog(true);
+        setSectorIdToChange(data.id)
+        setchangeCity(data.city_id)
+        setchangeLat(data.sector_lat)
+        setchangeLing(data.sector_lng)
+        
     };
     const handleCloseChangeDialog = () => {
         setOpenChangeDialog(false);
     };
 
+    const handleChangeChangedLat = (event) => {
+        setchangeLat(event.target.value);
+    };
 
+    const handleChangeChangedLing = (event) => {
+        setchangeLing(event.target.value);
+    };
+
+    const handleChangeChangedCity = (event) => {
+        setchangeCity(event.target.value);
+    };
+
+
+
+
+    const [sectors,setSectors] = React.useState([])
+    const [cities,setCities] = React.useState([])
+    React.useEffect(() => {
+      axios.get(apiurl+"showCitiesSectors")
+          .then((response) => {
+              setSectors(response.data.sectors);
+              setCities(response.data.cities)
+              console.log(response.data);
+          })
+          .catch((error) => console.log(error));
+  }, []);
 
     const AddBramch = () => {
-        console.log(city)        
-        console.log(lat,Ling)
+        console.log(token)
+        console.log({
+            city_id:city.id,
+            lat:city.lat,
+            lng:city.lng
+        })
+        if(city)
+        {
+            try {
+                setLoading(true)
+                const response = axios.post(url+'addSector', 
+                {
+                    city_id:city.id,
+                    lat:city.lat,
+                    lng:city.lng
+                },{
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization' : 'Bearer ' +token 
+                    }
+                }
+                ).then((response) => {
+                    console.log(response.data);
+                    setSectors(response.data.sectors)
+                    setLoading(false);
+                }).catch((error) => {
+                    
+                    setLoading(false)
+                    console.log(error);
+                });
+                } catch (e) {
+                    throw e;
+                }
+            }
+        
+    }
+    const ChangeBranch =()=>{
+        console.log(changeLing , changelat , changecity)
+        if(changeLing && changelat && changecity)
+        {
+            try {
+                setLoading(true)
+                const response = axios.post(url+'editSector', 
+                {
+                    sector_id:sectorIdToChange,
+                    city_id:changecity,
+                    lat:changelat,
+                    lng:changeLing
+                },{
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization' : 'Bearer ' +token 
+                    }
+                }
+                ).then((response) => {
+                    console.log(response.data);
+                    setLoading(false);
+                    setSectors(response.data.sectors)
+                    setOpenChangeDialog(false)
+                }).catch((error) => {
+                    
+                    setLoading(false)
+                    console.log(error);
+                });
+                } catch (e) {
+                    throw e;
+                }
+        }
     }
     return(
         <Container>
@@ -101,18 +198,19 @@ const Branches=()=>{
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {rows.map((row) => (
+                            {sectors.map((row) => (
                                 <TableRow
-                                key={row.name}
+                                key={row.city_name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
+
                                 <TableCell align="center">
-                                    text - text
+                                    {row.city_name}
                                 </TableCell>
-                                <TableCell align="center">{row.calories}</TableCell>
-                                <TableCell align="center">{row.fat}</TableCell>
+                                <TableCell align="center">{row.sector_lat}</TableCell>
+                                <TableCell align="center">{row.sector_lng}</TableCell>
                                 <TableCell align="center">
-                                     <Button onClick={()=>setOpenChangeDialog(true)} sx={{ color:"#bb252e" }} >
+                                     <Button onClick={()=>handleClickOpenChangeDialog(row)} sx={{ color:"#bb252e" }} >
                                         change data
                                     </Button> </TableCell>
                                 </TableRow>
@@ -133,13 +231,18 @@ const Branches=()=>{
                         label="city"
                         onChange={handleChangeCity}
                         >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {
+                            cities.map((item)=>{
+                                return(
+                                    <MenuItem value={item}>{ item.city_name }</MenuItem>
+                                )
+                            })
+                        }
                         </Select>
                     </FormControl>
-                    <br/><br/>
-                    <TextField
+                    <br/>
+                   {/* 
+                   <br/><TextField
                         type='number'
                         
                         id="outlined-error-helper-text"
@@ -156,7 +259,7 @@ const Branches=()=>{
                         defaultValue=""
                         helperText="This field must not be empty"
                         onChange={handleChangeLing}
-                        />
+                    />*/}
                         <br/><br/>
                     <button onClick={()=>AddBramch()}  type="button" class="btn btn-primary "> save data <SaveAsTwoToneIcon /> </button>
                 </Col>
@@ -181,13 +284,17 @@ const Branches=()=>{
                     <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={city}
+                    value={changecity}
                     label="city"
-                    onChange={handleChangeCity}
+                    onChange={handleChangeChangedCity}
                     >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                        {
+                            cities.map((item)=>{
+                                return(
+                                    <MenuItem value={item.id}>{ item.city_name }</MenuItem>
+                                )
+                            })
+                        }
                     </Select>
                 </FormControl>
                 <br/><br/>
@@ -198,7 +305,8 @@ const Branches=()=>{
                     label="lat"
                     defaultValue=""
                     helperText="This field must not be empty"
-                    onChange={handleChangeLat}
+                    value={changelat}
+                    onChange={handleChangeChangedLat}
                     />
                     <TextField
                     type='number'
@@ -207,14 +315,15 @@ const Branches=()=>{
                     label="ling"
                     defaultValue=""
                     helperText="This field must not be empty"
-                    onChange={handleChangeLing}
+                    value={changeLing}
+                    onChange={handleChangeChangedLing}
                     />
                     <br/><br/>
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                 <Button className="App_button" onClick={handleCloseChangeDialog}>console</Button>
-                <Button className="App_button" onClick={handleCloseChangeDialog}>save</Button>
+                <Button className="App_button" onClick={()=>ChangeBranch()}>save</Button>
                 </DialogActions>
             </Dialog>
         </Container>
