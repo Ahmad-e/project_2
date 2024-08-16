@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {modeActions} from "../Store/Store";
-import {useState,useEffect} from 'react';
+import {useState} from 'react';
 import axios from "axios";
 
 
 function Card(param) {
+
     
     const [isLove,setIsLove] =  useState(param.love);
     const [isAdded,setIsAdded] =  useState(false);
@@ -76,7 +77,7 @@ function Card(param) {
                         <p className='pLove'>{isLove ? "Loved" : "Love"}</p>
                     </div>
                 </div>
-                <Link to="/" className='card-btn d-block fw-bold py-2 px-4 mt-3'>
+                <Link to={"/product/"+ param.id} className='card-btn d-block fw-bold py-2 px-4 mt-3'>
                     <span>More</span>
                 </Link>
             </div>

@@ -184,12 +184,34 @@
   color: var(--main-color);
   text-align: center;
 }
-/*end profile style*/
+.profile .messages {
+  text-align: center;
+  box-shadow: 0 0 10px rgb(0, 0, 0, 33%);
+}
+.profile table {
+  width: 70%;
+  box-shadow: 0 0 1px rgb(0, 0, 0, 33%);
+}
+.profile table td {
+  display: inline-block;
+  padding: 30px;
+  width: 50%;
+}
 
+.profile table th td:nth-child(1) {
+  border-right: 1px solid #ccc;
+}
+.profile table tbody td:nth-child(1) {
+  border-right: 1px solid #ccc;
+}
+.profile table th{
+  color: white;
+  background-color: var(--main_color);
+}
+/*end profile style*/
 /* Start ProductInfo */
 .productInfo {
   background-color: var(--main-bgColor);
-  height: 100vh;
 }
 .productInfo .box {
 
