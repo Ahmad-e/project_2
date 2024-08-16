@@ -1,36 +1,60 @@
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as empty} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container } from "react-bootstrap";
-import { useState } from "react";
-import Img from '../images/home.jpg'
-function ProductInfo(){
+import {  Col, Container } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import Card from "../component/card";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
-    let mode = "light";
+function ProductInfo(){
 
     const [hidden,setHidden] = useState("true");
     const [number,setNumber] = useState("");
     const [isLove,setIsLove] = useState(false);
     const [numLoves,setNumLoves] = useState(false);
+    const [productInfo,setProductInfo] = useState([]);
+    const [sameType, setSameType]= useState([]);
+    const url = useSelector(state => state.url);
+    const token = useSelector(state => state.token);
+    console.log(url);
+    console.log(token);
 
-    const numberOfLoves = 33;
+    const {id} = useParams();
+    console.log(id);
+
+    useEffect(()=>{
+        axios.get(url+"showProductData/"+id,
+            {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization' : 'Bearer ' +token 
+                }
+            }
+        ).then(res => {
+            setProductInfo(res.data.product[0]);
+            setSameType(res.data["products with same type"]);
+        }).catch(err => {
+            console.log(err);
+        })
+    },[]);
 
     return(        
         <div className="productInfo">
-            <Container className="h-100 d-flex align-items-center align-items-start justify-content-center">
-                <div className="box rounded p-4">
+            <Container>
+                <div className="d-flex justify-content-center">
+                <div className="box rounded p-4 d-flex my-5 align-items-center align-items-start justify-content-center">
                     <div className="d-md-flex align-items-start text-sm-center text-md-start gap-4">
                         <div className="image">
-                            <img className="rounded" width={"200px"} height={"200px"} src={Img} alt="img" />
+                            <img className="rounded" width={"200px"} height={"200px"} src={productInfo.img_url} alt="img" />
                         </div>
                         <div className="info">
-                            <div className="name mb-4 fw-bold fs-5">Product Name</div>
-                            <div className=" ">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius commodi adipisci, porro eum odio qu Eius commodi adipisci
-                            </div>
+                            <div className="name mb-4 fw-bold fs-5">{productInfo.name}</div>
+                            <div className="disc">{productInfo.disc}</div>
                             <div className="price my-3 fw-bold fs-4">
                                 <span>
-                                    290$
+                                    {productInfo.price}$
                                 </span>
                             </div>
                             <button onClick={()=>setHidden(false)} className="btn mt-2 w-100 fw-bold btn-primary">Add to cart</button>
@@ -60,12 +84,30 @@ function ProductInfo(){
                                 </div>
                                 {numLoves && 
                                 <div className="mt-3 fs-5">
-                                    <span>{numberOfLoves}</span>
+                                    <span>{productInfo.likes}</span>
                                     <FontAwesomeIcon icon={faHeart} className="numberLove px-2"/>
                                 </div>}
                             </div>
                         </div>
                     </div>
+                </div>
+                </div>
+                <h2 className="mt-4 mb-3">Product meybe like</h2>
+                <div className="sameType row d-flex justify-content-center">
+                    {sameType.map((el,key)=>{
+                        return(
+                            <Col lg={4} md={6} sm={6} xs={12}>
+                            <Card 
+                                        id={el.id}
+                                        name={el.name}
+                                        imgURL={el.img_url}
+                                        disc={el.disc}
+                                        salary={el.price} 
+                                        love={true} 
+                                        type_id={el.type_id} />
+                        </Col>
+                        )
+                    })}
                 </div>
             </Container>
         </div>

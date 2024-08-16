@@ -20,6 +20,7 @@ const Home=()=>{
     const [ads,setAds]=useState([]);
     const [errServer,setErrServver] = useState(false);
     const url = useSelector(state=>state.url);
+    
     useEffect(() => {
         axios.get( url+"home",
             {
@@ -78,7 +79,7 @@ const Home=()=>{
                 {
                     product.map((item)=>{
                         return(
-                            <Col lg={3} md={4} sm={6} xs={12}>
+                            <Col lg={4} md={6} sm={6} xs={12}>
                                 <Card 
                                             id={item.id}
                                             name={item.name}

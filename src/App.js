@@ -40,6 +40,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
 import { dark } from '@mui/material/styles/createPalette';
+import EditProfile from './user/editProfile';
 
 
 const darkTheme = createTheme({
@@ -67,14 +68,14 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="basket" element={<Basket />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="editProfile" element={<EditProfile />} />
               <Route path="search/:name/:type" element={<Searh />} />
               <Route path="favorite" element={<Favorite />} />
               <Route path="support" element={<Support />} />
-              <Route path="product" element={<ProductInfo />} />
+              <Route path="product/:id" element={<ProductInfo />} />
               <Route path="orders" element={<UserOrder />} />
               <Route path="test" element={<SelectPoint />} />
               <Route path="*" element={<Err404 />} />
-
 
               <Route path="admin" element={<AdminApp />} >
                 <Route path="home" element={<AdminHome />}  />
