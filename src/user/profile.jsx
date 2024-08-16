@@ -41,7 +41,7 @@ function Profile() {
             .catch((error) => {
                 setErrServver(true);
                 console.log(error);
-                setLoad(false);
+                 setLoad(false);
             });
     }, []);
 

@@ -107,6 +107,7 @@ export default function EditProfile() {
             form.append('password', password);
             form.append('img_url', file);
 
+            
             try {
                 setLoading(true);
                 const response = axios.post('http://127.0.0.1:8000/api/editProfile',

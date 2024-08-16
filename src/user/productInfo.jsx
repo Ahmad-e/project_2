@@ -42,7 +42,7 @@ function ProductInfo(){
 
     return(        
         <div className="productInfo">
-            <Container>
+            <Container> 
                 <div className="d-flex justify-content-center">
                 <div className="box rounded p-4 d-flex my-5 align-items-center align-items-start justify-content-center">
                     <div className="d-md-flex align-items-start text-sm-center text-md-start gap-4">

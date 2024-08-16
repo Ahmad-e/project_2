@@ -69,6 +69,7 @@ function App() {
               <Route path="basket" element={<Basket />} />
               <Route path="profile" element={<Profile />} />
               <Route path="editProfile" element={<EditProfile />} />
+              
               <Route path="search/:name/:type" element={<Searh />} />
               <Route path="favorite" element={<Favorite />} />
               <Route path="support" element={<Support />} />

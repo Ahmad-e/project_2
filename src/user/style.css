@@ -197,6 +197,7 @@
   padding: 30px;
   width: 50%;
 }
+
 .profile table th td:nth-child(1) {
   border-right: 1px solid #ccc;
 }

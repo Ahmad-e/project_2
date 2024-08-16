@@ -92,7 +92,6 @@ const Home=()=>{
                         )
                     })
                 }
-
             </Row>
         </Container>
         </>
