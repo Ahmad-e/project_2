@@ -30,12 +30,15 @@ import ProductInfo from './user/productInfo';
 import UserOrder from './user/userOrder';
 import SelectPoint from './component/selectPoint'
 
+import AddMoney from './employee/addMoney'
 import Ads from './admin/ads';
 import Branches from './admin/branches';
 import Employees from './admin/employees';
 import Products from './admin/products';
 import Types from './admin/types';
-import Order from './admin/orders'
+import Order from './admin/orders';
+
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
@@ -85,7 +88,8 @@ function App() {
                 <Route path="products" element={<Products />}  />
                 <Route path="branchs" element={<Branches />}  />
                 <Route path="ads" element={<Ads />}  />
-                <Route path="order" element={<EmployeeHome />}  />
+                <Route path="order" element={<Order />}  />
+                <Route path="addMoney" element={<AddMoney />}  />
               </Route>
 
 
@@ -97,6 +101,7 @@ function App() {
               <Route path="employee" element={<EmployeeApp />} >
                 <Route path="home" element={<EmployeeHome />} />
                 <Route path="support" element={<SupportEmployee />} />
+                <Route path="addMoney" element={<AddMoney />}  />
               </Route>
               
           </Routes>

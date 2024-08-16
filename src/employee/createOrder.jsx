@@ -25,6 +25,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import {modeActions} from "../Store/Store"
 import axios from "axios";
 
+import Loading from '../component/loading';
+
+
+
 const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
     return (
       <BaseNumberInput
@@ -64,13 +68,27 @@ const CreateOrder=()=>{
   const dispatch = useDispatch();
     const [delaviryServe, setDelaviryServe] = React.useState(0);
     const [products,setproducts] = React.useState([]);
+    const [cities,setCities] =React.useState([]);
+    const [loading,setLoading] = React.useState(false);
+    const [selectedCity,setSelectedCity] =React.useState({});
+    const [errselectedCity,seterrSelectedCity] =React.useState(false);
+
+
+    const handleChangeSelectedLocation = (event) => {
+      setSelectedCity(event.target.value);
+    };
 
     React.useEffect(() => {
         //setLoading(true);
         axios.get(apiurl+"showProducts")
             .then((response) => {
                 setproducts(response.data.products)
-                console.log(response.data.products)
+            })
+            .catch((error) => console.log(error));
+
+        axios.get(apiurl+"showCitiesSectors")
+            .then((response) => {
+                setCities(response.data.cities)
             })
             .catch((error) => console.log(error));
     }, []);
@@ -87,8 +105,6 @@ const CreateOrder=()=>{
             quantity:1,
         }))
     };
-
-
     const changeNumberOfProduct=(product,newQuantity)=>{
       if(newQuantity > product.quantity)
         dispatch(addProduct(product))
@@ -96,9 +112,6 @@ const CreateOrder=()=>{
         dispatch(deleteProduct(product.id))
       
     }
-
-
-
     const Total=()=>{
       var sum=0;
       for(var i=0;i<basket.length;i++){
@@ -106,12 +119,45 @@ const CreateOrder=()=>{
       }
       return sum;
     }
+    const add_req =()=>{
+      if(!selectedCity.lat)
+        seterrSelectedCity(true)
+      if(selectedCity.lat && basket.length>0)
+      {
+            setLoading(true);
+            try {
+                const response = axios.post(apiurl+'addOrder', {
+                  lat:selectedCity.lat,
+                  lng:selectedCity.lng,
+                  products:basket
+                },{
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization' : 'Bearer ' +token 
+                    }
+                }
+                ).then((response) => {
+
+                    console.log(response.data);
+                    setLoading(false)
+                    dispatch(clearBasket())
+                    window.location.reload();
+                }).catch((error) => {
+                    console.log(error)
+                    setLoading(false)
+                });
+            } catch (e) {
+                throw e;
+            }        
+        }
+    }
 
 
     return(
         <Container>
+            <Loading  loading={loading} />
             <Row className=' product_table pt_50 justify-content-center'>
-                <Col>
+                <Col lg={5} md={12}>
                     <FormControl theme={darkTheme} fullWidth>
                         <InputLabel id="demo-simple-select-label">selecte product</InputLabel>
                         <Select
@@ -131,8 +177,24 @@ const CreateOrder=()=>{
                         </Select>
                     </FormControl>
                 </Col>
-                <Col>
-                
+                <Col lg={5} md={12} >
+                        <FormControl theme={darkTheme} fullWidth>
+                                <InputLabel id="demo-simple-select-label">Delivery method</InputLabel>
+                                <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={selectedCity}
+                                label="Delivery method"
+                                onChange={handleChangeSelectedLocation}
+                                >
+                                  {cities.map((item)=>{
+                                    return(
+                                      <MenuItem value={item}>{item.city_name}</MenuItem>
+                                    )
+                                  })}
+                                </Select>
+                                {errselectedCity && <p className="error-message"> Select the address to deliver to </p>}
+                            </FormControl>
                 </Col>
                 <Col>
                 
@@ -194,7 +256,7 @@ const CreateOrder=()=>{
                             <p className=' main-color'>toale :  {Total()} $ </p>  
                             </TableCell>
                             <TableCell align="center">
-                            <Button onClick={()=>console.log(basket)} color="error" variant="outlined"> add order  </Button>
+                            <Button onClick={()=>add_req()} color="error" variant="outlined"> add order  </Button>
 
                             </TableCell>
 

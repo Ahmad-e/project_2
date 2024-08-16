@@ -6,6 +6,7 @@ import SpaceDashboardRoundedIcon from '@mui/icons-material/SpaceDashboardRounded
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import WebOutlinedIcon from '@mui/icons-material/WebOutlined';
 import ChecklistIcon from '@mui/icons-material/Checklist';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {modeActions} from "../Store/Store";
@@ -50,6 +51,9 @@ const AdminNav=()=>{
 
             <Nav.Link className={ currentURL==="/admin/ads" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/admin/ads">
                 <WebOutlinedIcon/><span className='disable_in_mobile'>ads</span>  
+            </Nav.Link>
+            <Nav.Link className={ currentURL==="/admin/addMoney" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/admin/addMoney">
+                <PointOfSaleIcon/><span className='disable_in_mobile'>Transfer money</span>  
             </Nav.Link>
             <Nav.Link onClick={()=>logOut()} className="Admin_nav_link" >
                 <span  className='disable_in_mobile'>log out</span>  

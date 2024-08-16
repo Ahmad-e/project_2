@@ -22,7 +22,12 @@ import Select from '@mui/material/Select';
 import {  createTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {modeActions} from "../Store/Store"
-import Err401 from '../SVGs/err401'
+import Err401 from '../SVGs/err401';
+import Err404 from '../SVGs/err404';
+import Err500 from '../SVGs/err500';
+
+import Loading from '../component/loading';
+import axios from "axios";
 
 const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
     return (
@@ -55,16 +60,30 @@ const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
   
 const Basket=()=>{
 
-  const apiurl = useSelector(state=>state.url);
-  const token = useSelector(state=>state.token);
-  const acc = useSelector(state=>state.account);
-  const basket = useSelector(state=>state.basket);
-  const {clearBasket,addProduct,deleteProduct , deleteFullProduct} = modeActions;
-  const dispatch = useDispatch();
-    const [delaviryServe, setDelaviryServe] = React.useState(0);
+    const apiurl = useSelector(state=>state.url);
+    const token = useSelector(state=>state.token);
+    const acc = useSelector(state=>state.account);
+    const basket = useSelector(state=>state.basket);
+    const {clearBasket,addProduct,deleteProduct , deleteFullProduct} = modeActions;
+    const dispatch = useDispatch();
 
-    const handleChangeDelaviryServe = (event) => {
-      setDelaviryServe(event.target.value);
+    const [loading,setLoading] = React.useState(false);
+    const [errServer,setErrServver] = React.useState(false);
+    const [cities,setCities] =React.useState([]);
+    
+    const [selectedCity,setSelectedCity] =React.useState({});
+    const [errselectedCity,seterrSelectedCity] =React.useState(false);
+    React.useEffect(() => {
+      axios.get(apiurl+"showCitiesSectors")
+          .then((response) => {
+              setCities(response.data.cities)
+              
+          })
+          .catch((error) => console.log(error));
+  }, []);
+
+    const handleChangeSelectedLocation = (event) => {
+      setSelectedCity(event.target.value);
     };
 
 
@@ -73,12 +92,40 @@ const Basket=()=>{
         dispatch(addProduct(product))
       if(newQuantity<product.quantity)
         dispatch(deleteProduct(product.id))
-      
     }
 
     const add_req =()=>{
-      
-      console.log(basket)
+      if(!selectedCity.lat)
+        seterrSelectedCity(true)
+      if(selectedCity.lat && basket.length>0)
+      {
+            setLoading(true);
+            try {
+                const response = axios.post(apiurl+'sendOrder', {
+                  lat:selectedCity.lat,
+                  lng:selectedCity.lng,
+                  products:basket
+                },{
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization' : 'Bearer ' +token 
+                    }
+                }
+                ).then((response) => {
+
+                    console.log(response.data);
+                    setLoading(false)
+                    dispatch(clearBasket())
+                    window.location.href = '/orders';
+                }).catch((error) => {
+                    console.log(error)
+                    setErrServver(true);
+                    setLoading(false)
+                });
+            } catch (e) {
+                throw e;
+            }        
+        }
     }
 
     const Total=()=>{
@@ -89,6 +136,15 @@ const Basket=()=>{
       return sum;
     }
 
+    if(errServer)
+      return(
+          <div>
+              <Err500/>
+              <p>
+                  There was a problem with the servers , You can try later
+              </p>
+          </div>
+      )
     if(acc!=="3")
       return(
         <div>
@@ -96,9 +152,18 @@ const Basket=()=>{
         </div>
 
       )
+      if(basket.length===0)
+        return(
+          <div>
+            <Err404 />
+            <p> The basket is empty. Add some items to the basket from <a href='/search/-1/-1'>here</a>  </p>
+          </div>
+  
+        )
 
     return(
         <Container>
+                      <Loading  loading={loading} />
             <Row className='pt_50 justify-content-center'>
                 <Col sm={12} md={7} lg={8}>
                 <TableContainer sx={{ borderRadius:"12px" }}  component={Paper}>
@@ -145,8 +210,19 @@ const Basket=()=>{
                                         Delete
                                     </Button>
                                 </TableCell>
+
                             </TableRow>
                         ))}
+                        <TableRow>
+                          <TableCell ></TableCell><TableCell ></TableCell><TableCell ></TableCell><TableCell ></TableCell>
+                            <TableCell 
+                              align="center"
+                             >
+                              <Button onClick={()=>dispatch(clearBasket())} sx={{ color:"#bb252e" }} >
+                                Delete
+                              </Button>
+                            </TableCell>
+                        </TableRow>
                         </TableBody>
                     </Table>
                     </TableContainer>
@@ -168,14 +244,17 @@ const Basket=()=>{
                                 <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={delaviryServe}
+                                value={selectedCity}
                                 label="Delivery method"
-                                onChange={handleChangeDelaviryServe}
+                                onChange={handleChangeSelectedLocation}
                                 >
-                                  <MenuItem value={10}>Ten</MenuItem>
-                                  <MenuItem value={20}>Twenty</MenuItem>
-                                  <MenuItem value={30}>Thirty</MenuItem>
+                                  {cities.map((item)=>{
+                                    return(
+                                      <MenuItem value={item}>{item.city_name}</MenuItem>
+                                    )
+                                  })}
                                 </Select>
+                                {errselectedCity && <p className="error-message"> Select the address to deliver to </p>}
                             </FormControl>
                         </div>
                         <h4 className='p-10 t-a-c' >

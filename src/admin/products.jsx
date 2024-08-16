@@ -36,7 +36,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import Card from '../component/card'
 
-import Img from '../images/home2.jpg';
 
 import Loading from '../component/loading';
 import axios from "axios";
@@ -63,9 +62,12 @@ const Products=()=>{
 
     const [productIdToDelete, setProductIdToDelete] = React.useState(0);
 
+    const [productIdToChange, setProductIdToChange] = React.useState(0);
     const [changeType, setChangeType] = React.useState(0);
-    const [changename, setchangeName] = React.useState(0);
-    const [changedisc, setchangeDisc] = React.useState(0);
+    const [changeSalary, setChangeSalary] = React.useState(1);
+    const [changename, setchangeName] = React.useState("");
+    const [changedisc, setchangeDisc] = React.useState("");
+    const [changeImg, setchangeImg] = React.useState(0);
     const [opendeleteDialog, setOpendeleteDialog] = React.useState(false);
 
     const [loading,setLoading] = React.useState(false);
@@ -79,6 +81,7 @@ const Products=()=>{
             .then((response) => {
                 settypes(response.data.products_types)
                 setproducts(response.data.products)
+                console.log(response.data.products)
             })
             .catch((error) => console.log(error));
     }, []);
@@ -121,9 +124,17 @@ const Products=()=>{
     const handleChangeChangeDisc = (event) => {
         setchangeDisc(event.target.value);
     };
+    const handleChangeChangeSalary= (event) => {
+        setChangeSalary(event.target.value);
+    };
 
-    const handleClickOpenChangeDialog = () => {
+    const handleClickOpenChangeDialog = (data) => {
+        setProductIdToChange(data.id)
         setOpenChangeDialog(true);
+        setChangeSalary(data.price);
+        setChangeType(data.type_id);
+        setchangeName(data.name);
+        setchangeDisc(data.disc);
     };
     const handleCloseChangeDialog = () => {
         setOpenChangeDialog(false);
@@ -144,9 +155,7 @@ const Products=()=>{
 
     const [openChangeDialog, setOpenChangeDialog] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpenChangeDialog(true);
-  };
+
 
   const handleClose = () => {
     setOpenChangeDialog(false);
@@ -157,45 +166,50 @@ const Products=()=>{
       
     }
   }
-
-
-  const addProduct =()=>{
-    console.log(token);
-
-
-    if(name!=="" && disc !=="" && type!==0 && salary>0 && image)
-        {
-            var form = new FormData();
-            form.append('name', name);
-            form.append('disc', disc);
-            form.append('type_id', type);
-            form.append('price', salary);
-            form.append('quantity', 100);
-            form.append('img_url', image);
-            setLoading(true);
-            try {
-                const response = axios.post(apiurl+'addProduct',
-                form,
-                {
-                    headers:{
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization' : 'Bearer ' +token ,
-                        'Accept':"application/json"
-                    }
-                }
-                ).then((response) => {
-                    console.log(response.data);
-                    setproducts(response.data.products)
-                    setLoading(false)
-                }).catch((error) => {
-                    console.log(error)
-                    setLoading(false)
-                });
-            } catch (e) {
-                throw e;
-            }
-        }
+  const handleChangChangedeFile=(e)=>{
+    if (e.target.files) {
+      setchangeImg(e.target.files[0]);
+      
+      
+    }
+    console.log("changeImg")
   }
+
+
+    const addProduct =()=>{
+        if(name!=="" && disc !=="" && type!==0 && salary>0 && image)
+            {
+                var form = new FormData();
+                form.append('name', name);
+                form.append('disc', disc);
+                form.append('type_id', type);
+                form.append('price', salary);
+                form.append('quantity', 100);
+                form.append('img_url', image);
+                setLoading(true);
+                try {
+                    const response = axios.post(apiurl+'addProduct',
+                    form,
+                    {
+                        headers:{
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization' : 'Bearer ' +token ,
+                            'Accept':"application/json"
+                        }
+                    }
+                    ).then((response) => {
+                        console.log(response.data);
+                        setproducts(response.data.products)
+                        setLoading(false)
+                    }).catch((error) => {
+                        console.log(error)
+                        setLoading(false)
+                    });
+                } catch (e) {
+                    throw e;
+                }
+            }
+    }
     const tuggleBlock =()=>{
         //console.log(productIdToDelete);
         setOpendeleteDialog(false)
@@ -216,6 +230,49 @@ const Products=()=>{
                 setLoading(false);
             });
     }
+    const changeProduct=()=>{
+        console.log(changeSalary,changename,changedisc,changeSalary)
+        if(changename!=="" && changedisc !=="" && changeType!==0 && changeSalary>0)
+            {
+                var form = new FormData();
+                form.append('product_id', productIdToChange);
+                form.append('name', changename);
+                form.append('disc', changedisc);
+                form.append('type_id', changeType);
+                form.append('price', changeSalary);
+                form.append('quantity', 100);
+                if(changeImg)
+                    form.append('img_url', changeImg);
+                setLoading(true);
+
+                try {
+                    const response = axios.post(apiurl+'editProduct',
+                    form,
+                    {
+                        headers:{
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization' : 'Bearer ' +token ,
+                            'Accept':"application/json"
+                        }
+                    }
+                    ).then((response) => {
+                        setOpenChangeDialog(false)
+                        console.log(response.data);
+                        setproducts(response.data.products)
+                        setLoading(false)
+                    }).catch((error) => {
+                        console.log(error)
+                        setLoading(false)
+                    });
+                } catch (e) {
+                    throw e;
+                }
+
+
+            }
+    }
+
+
 
     return(
         <Container>
@@ -231,6 +288,7 @@ const Products=()=>{
                                 <TableCell sx={{ color:"#fff" , backgroundColor:"#bb252e" }} align="center" >name</TableCell>
                                 <TableCell sx={{ color:"#fff" , backgroundColor:"#bb252e" }} align="center">type</TableCell>
                                 <TableCell sx={{ color:"#fff" , backgroundColor:"#bb252e" }} align="center">desc</TableCell>
+                                <TableCell sx={{ color:"#fff" , backgroundColor:"#bb252e" }} align="center">salary</TableCell>
                                 <TableCell sx={{ color:"#fff" , backgroundColor:"#bb252e" }} align="center">change</TableCell>
                                 <TableCell sx={{ color:"#fff" , backgroundColor:"#bb252e" }} align="center">deletw</TableCell>
                             </TableRow>
@@ -247,8 +305,9 @@ const Products=()=>{
                                 <TableCell align="center">{row.name}</TableCell>
                                 <TableCell align="center">{row.type_name}</TableCell>
                                 <TableCell align="center">{row.disc}</TableCell>
+                                <TableCell align="center">{row.price}</TableCell>
                                 <TableCell align="center">
-                                     <Button onClick={()=>handleClickOpenChangeDialog(true)} sx={{ color:"#bb252e" }} >
+                                     <Button onClick={()=>handleClickOpenChangeDialog(row)} sx={{ color:"#bb252e" }} >
                                         change
                                     </Button>
                                 </TableCell>
@@ -342,23 +401,28 @@ const Products=()=>{
                     
                 </Toolbar>
                 </AppBar>
-                <Col lg={12} sm={12} className='col_in_change_dialog' >
+                <Row className=' justify-content-center'>
+                    <Col lg={12} sm={12} className='col_in_change_dialog' >
                         <br/>
-                        <input className='p_20' accept="image/*"  type="file" id="inputFile1" />
-                        <label  className="btn-primary btn p_20" for="inputFile1" > Upload image <FileUploadRoundedIcon/> </label>
+                        <input onChange={handleChangChangedeFile} className='p_20' accept="image/*"  type="file" id="inputFile1_" />
+                        <label  className="btn-primary btn p_20" for="inputFile1_" > Upload image <FileUploadRoundedIcon/> </label>
                         <br/><br/>
                         <FormControl  sx={{ width:"224px", margin:"16px" }}>
                             <InputLabel id="demo-simple-select-label">type</InputLabel>
                             <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={type}
+                            value={changeType}
                             label="type"
-                            onChange={handleChangeType}
+                            onChange={handleChangeChangeType}
                             >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {
+                                types.map((item)=>{
+                                    return(
+                                        <MenuItem value={item.id}>{item.name}</MenuItem>
+                                    )
+                                })
+                            }
                             </Select>
                         </FormControl>
                         <TextField
@@ -368,25 +432,38 @@ const Products=()=>{
                             label="name"
                             defaultValue=""
                             helperText="This field must not be empty"
-                            onChange={handleChangeName}
+                            value={changename}
+                            onChange={handleChangeChangeName}
                             />
-                            <TextField
+                        <TextField
                             sx={{  margin:"16px" }}
                             id="outlined-error-help-text"
                             className='p_20'
                             label="description"
                             defaultValue=""
                             helperText="This field must not be empty"
-                            onChange={disc}
+                            value={changedisc}
+                            onChange={handleChangeChangeDisc}
+                            />
+                        <TextField
+                            sx={{  margin:"16px" }}
+                            error={errSalary}
+                            className='p_20'
+                            type='number'
+                            min={0}
+                            id="outlined-error-helper-text"
+                            label="salary"
+                            helperText="This field must not be empty"
+                            value={changeSalary}
+                            onChange={handleChangeChangeSalary}
                             />
                             <br/><br/>
                         
                     </Col>
-                    <div lg={12} sm={12} className='col_in_change_dialog'>
-                        <Card name={changename} id={100} disc={changedisc} imgURL={Img} /><br/><br/>
-                        <button onClick={()=>AddBramch()}  type="button" class="btn btn-primary"> save data <SaveAsTwoToneIcon /> </button><br/><br/><br/><br/>
-                    </div>
-                
+                    <Col className='col_in_change_dialog'>
+                    <button onClick={()=>changeProduct()}  type="button" class="btn btn-primary "> save changes <SaveAsTwoToneIcon /> </button>
+                    </Col>
+                </Row>
             </Dialog>
             {/* delete Dialog */}
             <Dialog

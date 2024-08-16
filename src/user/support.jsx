@@ -22,9 +22,10 @@ const Support =()=>{
     const [Message, setMessage] = useState('');
     const [sended, setSended] = useState(true);
     const [loading,setLoading] = React.useState(false);
+    
     const handleSubmit = (e) => {
       e.preventDefault();
-
+        console.log(token)
       console.log('Message:', Message);
 
       try {

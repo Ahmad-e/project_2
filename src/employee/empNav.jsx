@@ -1,6 +1,7 @@
 import Nav from 'react-bootstrap/Nav';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -25,8 +26,8 @@ const EmpNav=()=>{
             <Nav.Link className={ currentURL==="/employee/home" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/employee/home">
                 <ChecklistIcon/><span className='disable_in_mobile'>orders</span> 
             </Nav.Link>
-            <Nav.Link className={ currentURL==="/employee" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/employee/home">
-                <EditNoteIcon/><span className='disable_in_mobile'>create order</span> 
+            <Nav.Link className={ currentURL==="/employee/addMoney" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/employee/addMoney">
+                <PointOfSaleIcon/><span className='disable_in_mobile'>Transfer money</span>  
             </Nav.Link>
             <Nav.Link className={ currentURL==="/employee/support" ? 'Admin_nav_link_selected Admin_nav_link' : "Admin_nav_link"} href="/employee/support">
                 <SupportAgentIcon/><span className='disable_in_mobile'>support</span>  
